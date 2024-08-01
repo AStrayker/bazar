@@ -1,77 +1,77 @@
-﻿<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Доска объявлений</title>
+    <title>Додавання оголошення</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <div class="logo">Доска объявлений</div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Главная</a></li>
-                <li><a href="services.html">Услуги</a></li>
-            </ul>
-        </nav>
-        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
-    </header>
-    
-    <div class="container">
-        <aside class="sidebar">
-            <ul>
-                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
-                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
-                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
-                <li><a href="category.html?category=grain">Зерно та корма</a></li>
-                <li><a href="category.html?category=food">Продукти харчування</a></li>
-                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
-                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
-                <li><a href="category.html?category=garden">Сад та город</a></li>
-                <li><a href="category.html?category=cosmetics">Косметика</a></li>
-                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
-                <li><a href="category.html?category=other">Інше</a></li>
-            </ul>
-        </aside>
-        
-        <main>
-            <div class="filter-bar">
-                <select>
-                    <option value="date">Сортировать по дате</option>
-                    <option value="price">Сортировать по цене</option>
+    <div class="form-container">
+        <form>
+            <label for="photos">Фото (макс. 5):</label>
+            <input type="file" id="photos" name="photos" accept="image/*" multiple>
+            
+            <label for="title">Назва оголошення:</label>
+            <input type="text" id="title" name="title" placeholder="Продам курячі яйця">
+            
+            <label for="price">Ціна:</label>
+            <div class="inline-fields">
+                <input type="text" id="price" name="price" placeholder="50 ₴">
+                <input type="number" id="quantity" name="quantity" placeholder="Кількість">
+                <select id="unit" name="unit">
+                    <option value="kg">Кілограм</option>
+                    <option value="pcs">Штук</option>
+                    <option value="ltr">Літр(ів)</option>
+                    <option value="m">Метрів</option>
+                    <option value="g">Грам</option>
+                    <option value="m2">Метр2</option>
+                    <option value="m3">Метр3</option>
                 </select>
-                <select>
-                    <option value="Zorya">Зоря</option>
-                    <option value="Balovka">Баловка</option>
-                    <option value="Loboykovka">Лобойковка</option>
-                    <option value="Petrikovka">Петриковка</option>
-                    <option value="Partizansk">Партизанск</option>
-                    <option value="Chumaki">Чумаки</option>
-                </select>
-                <button onclick="location.href='add.html'">Добавить объявление</button>
             </div>
             
-            <div class="ad-listings">
-                <div class="ad-card">
-                    <img src="images/sample.jpg" alt="Ad Image">
-                    <div class="ad-details">
-                        <span class="ad-date">Дата публикации: 01.01.2024</span>
-                        <span class="ad-price">$100</span>
-                        <span class="ad-field1">Поле 1</span>
-                        <span class="ad-field2">Поле 2</span>
-                        <p class="ad-title">Название товара...</p>
-                    </div>
+            <div id="additional-fields-container">
+                <label>Додаткові поля (макс. 15):</label>
+                <div class="additional-field">
+                    <input type="text" name="additional-field-name" placeholder="Назва поля">
+                    <input type="text" name="additional-field-value" placeholder="Інформація">
+                    <button type="button" class="remove-field">Видалити</button>
                 </div>
-                <!-- More ad-cards -->
             </div>
-        </main>
+            <button type="button" id="add-field">Додати поле для дод. інформації</button>
+            
+            <label for="description">Опис:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+            
+            <h2>Контакти продавця</h2>
+            
+            <label for="seller-name">Ім'я:</label>
+            <input type="text" id="seller-name" name="seller-name">
+            
+            <label for="phone-number">Номер телефону:</label>
+            <input type="tel" id="phone-number" name="phone-number">
+            <div>
+                <input type="checkbox" id="viber" name="messenger" value="Viber">
+                <label for="viber">Вайбер</label>
+                <input type="checkbox" id="telegram" name="messenger" value="Telegram">
+                <label for="telegram">Телеграм</label>
+                <input type="checkbox" id="whatsapp" name="messenger" value="WhatsApp">
+                <label for="whatsapp">Вацап</label>
+            </div>
+            
+            <label for="region">Я живу в:</label>
+            <select id="region" name="region">
+                <option value="balovka">Баловка</option>
+                <option value="zorja">Зоря</option>
+                <!-- Додати інші райони -->
+            </select>
+            
+            <label for="address">За адресою:</label>
+            <input type="text" id="address" name="address" placeholder="Необов'язково">
+            
+            <button type="submit">Додати оголошення</button>
+        </form>
     </div>
-    
-    <footer>
-        <p>© 2024 Доска объявлений</p>
-    </footer>
-
-    <script src="script.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
