@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить объявление</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Доска объявлений</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </nav>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
+                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
+                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
+                <li><a href="category.html?category=grain">Зерно та корма</a></li>
+                <li><a href="category.html?category=food">Продукти харчування</a></li>
+                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
+                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
+                <li><a href="category.html?category=garden">Сад та город</a></li>
+                <li><a href="category.html?category=cosmetics">Косметика</a></li>
+                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
+                <li><a href="category.html?category=other">Інше</a></li>
+            </ul>
+        </aside>
+        
+        <main>
+            <form id="ad-form">
+                <label for="title">Заголовок</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="image">Изображение</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                
+                <label for="date">Дата публикации</label>
+                <input type="date" id="date" name="date" required>
+                
+                <label for="price">Цена</label>
+                <input type="text" id="price" name="price" required>
+                
+                <label for="field1">Дополнительное поле 1</label>
+                <input type="text" id="field1" name="field1" required>
+                
+                <label for="field2">Дополнительное поле 2</label>
+                <input type="text" id="field2" name="field2" required>
+                
+                <label for="region">Регион</label>
+                <select id="region" name="region" required>
+                    <option value="Zorya">Зоря</option>
+                    <option value="Balovka">Баловка</option>
+                    <option value="Loboykovka">Лобойковка</option>
+                    <option value="Petrikovka">Петриковка</option>
+                    <option value="Partizansk">Партизанск</option>
+                    <option value="Chumaki">Чумаки</option>
+                </select>
+                
+                <button type="submit">Добавить объявление</button>
+            </form>
+        </main>
+    </div>
+    
+    <footer>
+        <p>© 2024 Доска объявлений</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

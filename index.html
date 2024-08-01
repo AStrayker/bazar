@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доска объявлений</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Доска объявлений</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </nav>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
+                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
+                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
+                <li><a href="category.html?category=grain">Зерно та корма</a></li>
+                <li><a href="category.html?category=food">Продукти харчування</a></li>
+                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
+                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
+                <li><a href="category.html?category=garden">Сад та город</a></li>
+                <li><a href="category.html?category=cosmetics">Косметика</a></li>
+                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
+                <li><a href="category.html?category=other">Інше</a></li>
+            </ul>
+        </aside>
+        
+        <main>
+            <div class="filter-bar">
+                <select>
+                    <option value="date">Сортировать по дате</option>
+                    <option value="price">Сортировать по цене</option>
+                </select>
+                <select>
+                    <option value="Zorya">Зоря</option>
+                    <option value="Balovka">Баловка</option>
+                    <option value="Loboykovka">Лобойковка</option>
+                    <option value="Petrikovka">Петриковка</option>
+                    <option value="Partizansk">Партизанск</option>
+                    <option value="Chumaki">Чумаки</option>
+                </select>
+                <button onclick="location.href='add.html'">Добавить объявление</button>
+            </div>
+            
+            <div class="ad-listings">
+                <div class="ad-card">
+                    <img src="images/sample.jpg" alt="Ad Image">
+                    <div class="ad-details">
+                        <span class="ad-date">Дата публикации: 01.01.2024</span>
+                        <span class="ad-price">$100</span>
+                        <span class="ad-field1">Поле 1</span>
+                        <span class="ad-field2">Поле 2</span>
+                        <p class="ad-title">Название товара...</p>
+                    </div>
+                </div>
+                <!-- More ad-cards -->
+            </div>
+        </main>
+    </div>
+    
+    <footer>
+        <p>© 2024 Доска объявлений</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
