@@ -3,102 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма додавання оголошення</title>
+    <title>Додати Оголошення</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <button id="toggleTheme">Змінити колір фону</button>
-        <form id="adForm">
-            <div class="photo-upload">
-                <label for="photo">Перетягніть фото або натисніть на кнопку</label>
-                <input type="file" id="photo" name="photo" accept="image/*" multiple required>
-                <div id="photoPreview"></div>
-            </div>
+        <button id="toggleTheme">Змінити фон</button>
+        <h1>Додати Оголошення</h1>
+        <form id="addAdForm">
+            <label for="photos">Фото (до 5 фото):</label>
+            <input type="file" id="photos" name="photos" accept="image/*" multiple>
+            
+            <label for="title">Назва оголошення:</label>
+            <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
 
-            <div class="form-group">
-                <label for="title">Назва оголошення</label>
-                <input type="text" id="title" name="title" placeholder="Продам курячі яйця" required>
-            </div>
+            <label for="price">Ціна:</label>
+            <input type="number" id="price" name="price" placeholder="50 грн" required>
+            
+            <label for="quantity">Кількість:</label>
+            <input type="number" id="quantity" name="quantity" placeholder="10" required>
 
-            <div class="form-group">
-                <label for="category">Категорія</label>
-                <select id="category" name="category" required>
-                    <option value="auto">Авто/Мото/Вело</option>
-                    <option value="clothing">Одяг, взуття та інше</option>
-                    <option value="fruits">Фрукти та овочі</option>
-                    <option value="grain">Зерно та корма</option>
-                    <option value="food">Продукти харчування</option>
-                    <option value="animals">Тварини та препарати</option>
-                    <option value="tools">Інструменти та запчастини</option>
-                    <option value="garden">Сад та город</option>
-                    <option value="cosmetics">Косметика</option>
-                    <option value="household">Побутова хімія</option>
-                    <option value="other">Інше</option>
-                </select>
-            </div>
+            <label for="unit">Одиниця виміру:</label>
+            <select id="unit" name="unit">
+                <option value="Кілограм">Кілограм</option>
+                <option value="Штук">Штук</option>
+                <option value="Літр(ів)">Літр(ів)</option>
+                <option value="Метрів">Метрів</option>
+                <option value="Грам">Грам</option>
+                <option value="Метр2">Метр2</option>
+                <option value="Метр3">Метр3</option>
+            </select>
 
-            <div class="form-group">
-                <label for="price">Ціна</label>
-                <input type="number" id="price" name="price" placeholder="50 грн" required>
-                <label for="quantity">Кількість</label>
-                <input type="number" id="quantity" name="quantity" placeholder="10" required>
-                <label for="unit">Од. виміру</label>
-                <select id="unit" name="unit" required>
-                    <option value="kg">Кілограм</option>
-                    <option value="pcs">Штук</option>
-                    <option value="ltr">Літр(ів)</option>
-                    <option value="m">Метрів</option>
-                    <option value="g">Грам</option>
-                    <option value="m2">Метр²</option>
-                    <option value="m3">Метр³</option>
-                </select>
-            </div>
+            <label for="additionalFields">Додаткові поля:</label>
+            <div id="additionalFields"></div>
+            <button type="button" id="addFieldButton">Додати поле для доп. інформації</button>
 
-            <div class="form-group" id="additionalFields">
-                <button type="button" id="addField">Додати поле для доп. інформації</button>
-            </div>
+            <label for="description">Опис:</label>
+            <textarea id="description" name="description"></textarea>
 
-            <div class="form-group">
-                <label for="description">Опис</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
-            </div>
+            <label for="sellerName">Ім'я продавця:</label>
+            <input type="text" id="sellerName" name="sellerName" required>
 
-            <div class="form-group">
-                <label for="sellerName">Ім'я продавця</label>
-                <input type="text" id="sellerName" name="sellerName" required>
-                <label for="phoneNumber">Номер телефону</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber" required>
-            </div>
-
-            <div class="form-group">
-                <label>У мене є:</label>
-                <input type="checkbox" id="viber" name="messenger" value="viber">
+            <label for="phoneNumber">Номер телефону:</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" required>
+            <div>
                 <label for="viber">Вайбер</label>
-                <input type="checkbox" id="telegram" name="messenger" value="telegram">
+                <input type="checkbox" id="viber" name="messenger" value="viber">
                 <label for="telegram">Телеграм</label>
-                <input type="checkbox" id="whatsapp" name="messenger" value="whatsapp">
+                <input type="checkbox" id="telegram" name="messenger" value="telegram">
                 <label for="whatsapp">Вацап</label>
+                <input type="checkbox" id="whatsapp" name="messenger" value="whatsapp">
             </div>
 
-            <div class="form-group">
-                <label for="region">Я живу в:</label>
-                <select id="region" name="region" required>
-                    <option value="balovka">Баловка</option>
-                    <option value="zorya">Зоря</option>
-                    <option value="loboykovka">Лобойковка</option>
-                    <option value="petrikovka">Петриковка</option>
-                    <option value="partizansk">Партизанск</option>
-                    <option value="chumaki">Чумаки</option>
-                </select>
-                <label for="address">По адресою</label>
-                <input type="text" id="address" name="address" placeholder="Необов'язково">
-            </div>
+            <label for="region">Я живу в:</label>
+            <select id="region" name="region">
+                <option value="Зоря">Зоря</option>
+                <option value="Баловка">Баловка</option>
+                <option value="Лобойковка">Лобойковка</option>
+                <option value="Петриковка">Петриковка</option>
+                <option value="Партизанск">Партизанск</option>
+                <option value="Чумаки">Чумаки</option>
+            </select>
+
+            <label for="address">По адресу:</label>
+            <input type="text" id="address" name="address">
 
             <button type="submit">Додати оголошення</button>
         </form>
     </div>
-
-    <script src="script.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
