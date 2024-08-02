@@ -1,51 +1,41 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Доска объявлений</title>
-    <style>
-        body {
-            background-color: white;
-            color: black;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .btn-toggle-theme {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .btn-add-field {
-            margin-top: 10px;
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-remove-field {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-    </style>
+    <title>Добавить объявление</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <div class="logo">Доска объявлений</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </nav>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
+                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
+                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
+                <li><a href="category.html?category=grain">Зерно та корма</a></li>
+                <li><a href="category.html?category=food">Продукти харчування</a></li>
+                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
+                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
+                <li><a href="category.html?category=garden">Сад та город</a></li>
+                <li><a href="category.html?category=cosmetics">Косметика</a></li>
+                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
+                <li><a href="category.html?category=other">Інше</a></li>
+            </ul>
+        </aside>
+        
+        <body>
     <div class="container">
         <button class="btn-toggle-theme" onclick="toggleTheme()">Сменить фон</button>
         <form id="adForm">
@@ -109,36 +99,11 @@
             <button type="submit">Подать объявление</button>
         </form>
     </div>
+    
+    <footer>
+        <p>© 2024 Доска объявлений</p>
+    </footer>
 
-    <script>
-        function toggleTheme() {
-            const body = document.body;
-            if (body.style.backgroundColor === 'white') {
-                body.style.backgroundColor = 'black';
-                body.style.color = 'white';
-            } else {
-                body.style.backgroundColor = 'white';
-                body.style.color = 'black';
-            }
-        }
-
-        function addField() {
-            const additionalFields = document.getElementById('additional-fields');
-            const fieldCount = additionalFields.children.length / 3;
-            if (fieldCount < 15) {
-                const fieldDiv = document.createElement('div');
-                fieldDiv.innerHTML = `
-                    <input type="text" name="additionalField${fieldCount}Name" placeholder="Название поля">
-                    <input type="text" name="additionalField${fieldCount}Value" placeholder="Информация">
-                    <button type="button" class="btn-remove-field" onclick="removeField(this)">Удалить</button><br><br>
-                `;
-                additionalFields.appendChild(fieldDiv);
-            }
-        }
-
-        function removeField(button) {
-            button.parentElement.remove();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
