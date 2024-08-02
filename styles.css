@@ -1,56 +1,162 @@
-body {
+﻿body {
+    background-color: #121212;
+    color: #ffffff;
     font-family: Arial, sans-serif;
-    background-color: white;
-    color: black;
-    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding: 0;
 }
 
-.dark-theme {
-    background-color: black;
-    color: white;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1f1f1f;
+}
+
+.logo {
+    font-size: 1.5em;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.menu-icon {
+    display: none;
+    cursor: pointer;
 }
 
 .container {
-    width: 90%;
-    max-width: 800px;
-    margin: auto;
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #1f1f1f;
+    padding: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px 0;
+}
+
+.sidebar ul li a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+main {
+    flex: 1;
     padding: 20px;
 }
 
-label {
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.filter-bar button {
+    background-color: #ff6600;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.ad-listings, .service-listings {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.ad-card, .service-card {
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.ad-card img, .service-card img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.ad-details, .service-details {
+    padding: 10px 0;
+}
+
+.ad-date, .service-date,
+.ad-price, .service-price,
+.ad-field1, .service-field1,
+.ad-field2, .service-field2,
+.ad-title, .service-title {
     display: block;
+    margin: 5px 0;
+}
+
+.ad-title, .service-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+footer {
+    background-color: #1f1f1f;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
     margin-top: 10px;
 }
 
-input, textarea, select, button {
-    width: 100%;
+form input, form select, form button {
     padding: 10px;
     margin-top: 5px;
 }
 
-button {
-    background-color: #007BFF;
-    color: white;
+form button {
+    background-color: #ff6600;
+    color: #ffffff;
     border: none;
     cursor: pointer;
-    padding: 10px;
-    margin-top: 10px;
+    border-radius: 5px;
 }
 
-button:hover {
-    background-color: #0056b3;
-}
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+    }
+    
+    .sidebar {
+        display: none;
+    }
 
-#additionalFields div {
-    display: flex;
-    margin-top: 10px;
-}
-
-#additionalFields input {
-    width: 45%;
-    margin-right: 10px;
-}
-
-#additionalFields button {
-    width: 10%;
+    .ad-listings, .service-listings {
+        grid-template-columns: 1fr;
+    }
 }
