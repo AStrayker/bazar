@@ -1,27 +1,50 @@
-            const input2 = document.createElement('input');
-            input2.type = 'text';
-            input2.placeholder = 'Інформація';
-            input2.name = 'extra_field_info';
+document.addEventListener('DOMContentLoaded', () => {
+    const photoInput = document.getElementById('photo');
+    const photoPreview = document.getElementById('photoPreview');
+    const toggleThemeButton = document.getElementById('toggleTheme');
+    const body = document.body;
 
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.textContent = 'Видалити';
-            removeButton.addEventListener('click', () => {
-                extraField.remove();
-            });
+    const updatePhotoPreview = () => {
+        photoPreview.innerHTML = '';
+        Array.from(photoInput.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                photoPreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
 
-            extraField.appendChild(input1);
-            extraField.appendChild(input2);
-            extraField.appendChild(removeButton);
-            extraFieldsContainer.appendChild(extraField);
+    photoInput.addEventListener('change', updatePhotoPreview);
+
+    toggleThemeButton.addEventListener('click', () => {
+        if (body.style.backgroundColor === 'black') {
+            body.style.backgroundColor = 'white';
+            body.style.color = 'black';
         } else {
-            alert('Максимум 15 додаткових полів');
+            body.style.backgroundColor = 'black';
+            body.style.color = 'white';
         }
     });
 
-    document.getElementById('ad-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Форма відправлена!');
-        // Здесь можно добавить обработку данных формы
+    const addFieldButton = document.getElementById('addField');
+    const additionalFieldsContainer = document.getElementById('additionalFields');
+
+    addFieldButton.addEventListener('click', () => {
+        const fieldGroup = document.createElement('div');
+        fieldGroup.className = 'additional-field-group';
+        fieldGroup.innerHTML = `
+            <input type="text" placeholder="Назва поля">
+            <input type="text" placeholder="Інформація">
+            <button type="button" class="remove-field">×</button>
+        `;
+        additionalFieldsContainer.insertBefore(fieldGroup, addFieldButton);
+
+        const removeButton = fieldGroup.querySelector('.remove-field');
+        removeButton.addEventListener('click', () => {
+            additionalFieldsContainer.removeChild(fieldGroup);
+        });
     });
 });
