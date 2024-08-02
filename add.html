@@ -1,111 +1,78 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Додати оголошення</title>
+    <title>Добавить объявление</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <div class="logo">Доска объявлений</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </nav>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    </header>
+    
     <div class="container">
-        <h1>Додати оголошення</h1>
-        <form id="ad-form">
-            <div class="photo-upload">
-                <label for="photos">Перетягніть фото або натисніть на кнопку</label>
-                <input type="file" id="photos" name="photos" accept="image/*" multiple required>
-                <div id="photo-preview"></div>
-            </div>
-
-            <div class="form-group">
-                <label for="title">Назва оголошення</label>
-                <input type="text" id="title" name="title" placeholder="Продам курячі яйця" required>
-            </div>
-
-            <div class="form-group">
-                <label for="category">Категорія оголошення</label>
-                <select id="category" name="category" required>
-                    <option value="Авто/Мото/Вело">Авто/Мото/Вело</option>
-                    <option value="Одяг, взуття та інше">Одяг, взуття та інше</option>
-                    <option value="Фрукти та овочі">Фрукти та овочі</option>
-                    <option value="Зерно та корма">Зерно та корма</option>
-                    <option value="Продукти харчування">Продукти харчування</option>
-                    <option value="Тварини та препарати">Тварини та препарати</option>
-                    <option value="Інструменти та запчастини">Інструменти та запчастини</option>
-                    <option value="Сад та город">Сад та город</option>
-                    <option value="Косметика">Косметика</option>
-                    <option value="Побутова хімія">Побутова хімія</option>
-                    <option value="Інше">Інше</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="price">Ціна</label>
-                <input type="number" id="price" name="price" placeholder="50 грн" required>
-
-                <label for="quantity">Кількість</label>
-                <input type="number" id="quantity" name="quantity" required>
-
-                <label for="unit">Одиниця виміру</label>
-                <select id="unit" name="unit" required>
-                    <option value="Кілограм">Кілограм</option>
-                    <option value="Штук">Штук</option>
-                    <option value="Літр(ів)">Літр(ів)</option>
-                    <option value="Метрів">Метрів</option>
-                    <option value="Грам">Грам</option>
-                    <option value="Метр2">Метр2</option>
-                    <option value="Метр3">Метр3</option>
-                </select>
-            </div>
-
-            <div class="additional-fields">
-                <label>Додаткові поля (макс. 15):</label>
-                <div id="extra-fields"></div>
-                <button type="button" id="add-field">Додати поле для дод. інформації</button>
-            </div>
-
-            <div class="form-group">
-                <label for="description">Опис</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="seller-name">Ім'я продавця</label>
-                <input type="text" id="seller-name" name="seller-name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Номер телефону</label>
-                <input type="tel" id="phone" name="phone" required>
-
-                <label>Месенджери</label>
-                <input type="checkbox" id="viber" name="messengers" value="Viber">
-                <label for="viber">Viber</label>
-                <input type="checkbox" id="telegram" name="messengers" value="Telegram">
-                <label for="telegram">Telegram</label>
-                <input type="checkbox" id="whatsapp" name="messengers" value="WhatsApp">
-                <label for="whatsapp">WhatsApp</label>
-            </div>
-
-            <div class="form-group">
-                <label for="region">Я живу в</label>
+        <aside class="sidebar">
+            <ul>
+                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
+                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
+                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
+                <li><a href="category.html?category=grain">Зерно та корма</a></li>
+                <li><a href="category.html?category=food">Продукти харчування</a></li>
+                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
+                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
+                <li><a href="category.html?category=garden">Сад та город</a></li>
+                <li><a href="category.html?category=cosmetics">Косметика</a></li>
+                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
+                <li><a href="category.html?category=other">Інше</a></li>
+            </ul>
+        </aside>
+        
+        <main>
+            <form id="ad-form">
+                <label for="title">Заголовок</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="image">Изображение</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                
+                <label for="date">Дата публикации</label>
+                <input type="date" id="date" name="date" required>
+                
+                <label for="price">Цена</label>
+                <input type="text" id="price" name="price" required>
+                
+                <label for="field1">Дополнительное поле 1</label>
+                <input type="text" id="field1" name="field1" required>
+                
+                <label for="field2">Дополнительное поле 2</label>
+                <input type="text" id="field2" name="field2" required>
+                
+                <label for="region">Регион</label>
                 <select id="region" name="region" required>
-                    <option value="Баловка">Баловка</option>
-                    <option value="Зоря">Зоря</option>
-                    <option value="Лобойковка">Лобойковка</option>
-                    <option value="Петриковка">Петриковка</option>
-                    <option value="Партизанск">Партизанск</option>
-                    <option value="Чумаки">Чумаки</option>
+                    <option value="Zorya">Зоря</option>
+                    <option value="Balovka">Баловка</option>
+                    <option value="Loboykovka">Лобойковка</option>
+                    <option value="Petrikovka">Петриковка</option>
+                    <option value="Partizansk">Партизанск</option>
+                    <option value="Chumaki">Чумаки</option>
                 </select>
-            </div>
-
-            <div class="form-group">
-                <label for="address">По адресу</label>
-                <input type="text" id="address" name="address" placeholder="Необов'язково">
-            </div>
-
-            <button type="submit">Додати оголошення</button>
-        </form>
+                
+                <button type="submit">Добавить объявление</button>
+            </form>
+        </main>
     </div>
+    
+    <footer>
+        <p>© 2024 Доска объявлений</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
