@@ -1,50 +1,34 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const photoInput = document.getElementById('photo');
-    const photoPreview = document.getElementById('photoPreview');
-    const toggleThemeButton = document.getElementById('toggleTheme');
-    const body = document.body;
+document.getElementById('toggleTheme').addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+});
 
-    const updatePhotoPreview = () => {
-        photoPreview.innerHTML = '';
-        Array.from(photoInput.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                photoPreview.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        });
-    };
+const addFieldButton = document.getElementById('addFieldButton');
+const additionalFields = document.getElementById('additionalFields');
+let fieldCount = 0;
 
-    photoInput.addEventListener('change', updatePhotoPreview);
+addFieldButton.addEventListener('click', () => {
+    if (fieldCount < 15) {
+        const fieldDiv = document.createElement('div');
+        const fieldName = document.createElement('input');
+        fieldName.setAttribute('type', 'text');
+        fieldName.setAttribute('placeholder', 'Назва поля');
 
-    toggleThemeButton.addEventListener('click', () => {
-        if (body.style.backgroundColor === 'black') {
-            body.style.backgroundColor = 'white';
-            body.style.color = 'black';
-        } else {
-            body.style.backgroundColor = 'black';
-            body.style.color = 'white';
-        }
-    });
+        const fieldValue = document.createElement('input');
+        fieldValue.setAttribute('type', 'text');
+        fieldValue.setAttribute('placeholder', 'Значення');
 
-    const addFieldButton = document.getElementById('addField');
-    const additionalFieldsContainer = document.getElementById('additionalFields');
-
-    addFieldButton.addEventListener('click', () => {
-        const fieldGroup = document.createElement('div');
-        fieldGroup.className = 'additional-field-group';
-        fieldGroup.innerHTML = `
-            <input type="text" placeholder="Назва поля">
-            <input type="text" placeholder="Інформація">
-            <button type="button" class="remove-field">×</button>
-        `;
-        additionalFieldsContainer.insertBefore(fieldGroup, addFieldButton);
-
-        const removeButton = fieldGroup.querySelector('.remove-field');
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'X';
         removeButton.addEventListener('click', () => {
-            additionalFieldsContainer.removeChild(fieldGroup);
+            additionalFields.removeChild(fieldDiv);
+            fieldCount--;
         });
-    });
+
+        fieldDiv.appendChild(fieldName);
+        fieldDiv.appendChild(fieldValue);
+        fieldDiv.appendChild(removeButton);
+        additionalFields.appendChild(fieldDiv);
+
+        fieldCount++;
+    }
 });
