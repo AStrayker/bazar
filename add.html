@@ -1,11 +1,104 @@
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar.style.display === 'block') {
-        sidebar.style.display = 'none';
-    } else {
-        sidebar.style.display = 'block';
-    }
-}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма додавання оголошення</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <button id="toggleTheme">Змінити колір фону</button>
+        <form id="adForm">
+            <div class="photo-upload">
+                <label for="photo">Перетягніть фото або натисніть на кнопку</label>
+                <input type="file" id="photo" name="photo" accept="image/*" multiple required>
+                <div id="photoPreview"></div>
+            </div>
 
-// Здесь будет функциональность для добавления, редактирования, удаления объявлений
-// и создания, управления учетными записями без подтверждения
+            <div class="form-group">
+                <label for="title">Назва оголошення</label>
+                <input type="text" id="title" name="title" placeholder="Продам курячі яйця" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Категорія</label>
+                <select id="category" name="category" required>
+                    <option value="auto">Авто/Мото/Вело</option>
+                    <option value="clothing">Одяг, взуття та інше</option>
+                    <option value="fruits">Фрукти та овочі</option>
+                    <option value="grain">Зерно та корма</option>
+                    <option value="food">Продукти харчування</option>
+                    <option value="animals">Тварини та препарати</option>
+                    <option value="tools">Інструменти та запчастини</option>
+                    <option value="garden">Сад та город</option>
+                    <option value="cosmetics">Косметика</option>
+                    <option value="household">Побутова хімія</option>
+                    <option value="other">Інше</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Ціна</label>
+                <input type="number" id="price" name="price" placeholder="50 грн" required>
+                <label for="quantity">Кількість</label>
+                <input type="number" id="quantity" name="quantity" placeholder="10" required>
+                <label for="unit">Од. виміру</label>
+                <select id="unit" name="unit" required>
+                    <option value="kg">Кілограм</option>
+                    <option value="pcs">Штук</option>
+                    <option value="ltr">Літр(ів)</option>
+                    <option value="m">Метрів</option>
+                    <option value="g">Грам</option>
+                    <option value="m2">Метр²</option>
+                    <option value="m3">Метр³</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="additionalFields">
+                <button type="button" id="addField">Додати поле для доп. інформації</button>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Опис</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="sellerName">Ім'я продавця</label>
+                <input type="text" id="sellerName" name="sellerName" required>
+                <label for="phoneNumber">Номер телефону</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
+            </div>
+
+            <div class="form-group">
+                <label>У мене є:</label>
+                <input type="checkbox" id="viber" name="messenger" value="viber">
+                <label for="viber">Вайбер</label>
+                <input type="checkbox" id="telegram" name="messenger" value="telegram">
+                <label for="telegram">Телеграм</label>
+                <input type="checkbox" id="whatsapp" name="messenger" value="whatsapp">
+                <label for="whatsapp">Вацап</label>
+            </div>
+
+            <div class="form-group">
+                <label for="region">Я живу в:</label>
+                <select id="region" name="region" required>
+                    <option value="balovka">Баловка</option>
+                    <option value="zorya">Зоря</option>
+                    <option value="loboykovka">Лобойковка</option>
+                    <option value="petrikovka">Петриковка</option>
+                    <option value="partizansk">Партизанск</option>
+                    <option value="chumaki">Чумаки</option>
+                </select>
+                <label for="address">По адресою</label>
+                <input type="text" id="address" name="address" placeholder="Необов'язково">
+            </div>
+
+            <button type="submit">Додати оголошення</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
