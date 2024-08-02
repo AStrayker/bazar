@@ -1,162 +1,89 @@
 body {
-    background-color: #121212;
-    color: #ffffff;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #1f1f1f;
-}
-
-.logo {
-    font-size: 1.5em;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    margin: 0 10px;
-}
-
-nav ul li a {
-    color: #ffffff;
-    text-decoration: none;
-}
-
-.menu-icon {
-    display: none;
-    cursor: pointer;
+    background-color: #fff;
+    color: #000;
 }
 
 .container {
-    display: flex;
-}
-
-.sidebar {
-    width: 200px;
-    background-color: #1f1f1f;
-    padding: 10px;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    padding: 10px 0;
-}
-
-.sidebar ul li a {
-    color: #ffffff;
-    text-decoration: none;
-}
-
-main {
-    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
 }
 
-.filter-bar {
-    display: flex;
-    justify-content: space-between;
+#toggleTheme {
     margin-bottom: 20px;
 }
 
-.filter-bar button {
-    background-color: #ff6600;
-    color: #ffffff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
+.form-group {
+    margin-bottom: 15px;
 }
 
-.ad-listings, .service-listings {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.ad-card, .service-card {
-    background-color: #2c2c2c;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.ad-card img, .service-card img {
-    width: 100%;
-    border-radius: 5px;
-}
-
-.ad-details, .service-details {
-    padding: 10px 0;
-}
-
-.ad-date, .service-date,
-.ad-price, .service-price,
-.ad-field1, .service-field1,
-.ad-field2, .service-field2,
-.ad-title, .service-title {
+.form-group label {
     display: block;
-    margin: 5px 0;
+    margin-bottom: 5px;
 }
 
-.ad-title, .service-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-footer {
-    background-color: #1f1f1f;
-    padding: 10px 20px;
-    text-align: center;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-form label {
+.photo-upload input {
+    display: block;
     margin-top: 10px;
 }
 
-form input, form select, form button {
-    padding: 10px;
-    margin-top: 5px;
+#photoPreview {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-form button {
-    background-color: #ff6600;
-    color: #ffffff;
+#photoPreview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
-    border-radius: 5px;
 }
 
-/* Адаптивный дизайн */
-@media (max-width: 768px) {
-    .menu-icon {
-        display: block;
-    }
-    
-    .sidebar {
-        display: none;
-    }
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
 
-    .ad-listings, .service-listings {
-        grid-template-columns: 1fr;
-    }
+button[type="button"] {
+    margin-top: 10px;
+}
+
+#additionalFields {
+    margin-bottom: 15px;
+}
+
+.additional-field-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.additional-field-group input {
+    flex: 1;
+}
+
+.additional-field-group button {
+    flex-shrink: 0;
 }
