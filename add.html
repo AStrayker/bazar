@@ -9,13 +9,20 @@
         .row {
             display: flex;
             flex-wrap: wrap;
+            margin-bottom: 15px;
         }
-        .row label, .row input, .row select {
+        .row label {
+            flex: 1 1 100%;
+        }
+        .row input, .row select {
             flex: 1 1 30%;
             margin-right: 10px;
         }
         .row input:last-child, .row select:last-child {
             margin-right: 0;
+        }
+        .full-width {
+            flex: 1 1 100%;
         }
         .file-drop-area {
             position: relative;
@@ -27,6 +34,7 @@
             border: 2px dashed #ddd;
             border-radius: 3px;
             transition: .2s;
+            margin-bottom: 15px;
         }
         .file-drop-area.is-active {
             background-color: rgba(0, 0, 0, 0.05);
@@ -75,26 +83,30 @@
                 <div class="file-drop-area">
                     Перетащите сюда фотографии или нажмите для выбора
                     <input type="file" id="photos" name="photos" accept="image/*" multiple required>
-                </div><br><br>
+                </div>
 
                 <label for="title">Название объявления:</label>
-                <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required><br><br>
+                <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
 
                 <label for="category">Категория:</label>
                 <select id="category" name="category">
                     <option value="Авто/Мото/Вело">Авто/Мото/Вело</option>
                     <option value="Одежда, взуття та інше">Одежда, взуття та інше</option>
                     <!-- Добавьте больше опций при необходимости -->
-                </select><br><br>
+                </select>
 
                 <div class="row">
-                    <label for="price">Цена:</label>
+                    <label for="price" class="full-width">Цена:</label>
                     <input type="number" id="price" name="price" required> грн
+                </div>
 
-                    <label for="quantity">Количество:</label>
+                <div class="row">
+                    <label for="quantity" class="full-width">Количество:</label>
                     <input type="number" id="quantity" name="quantity" required>
+                </div>
 
-                    <label for="unit">Единица измерения:</label>
+                <div class="row">
+                    <label for="unit" class="full-width">Единица измерения:</label>
                     <select id="unit" name="unit">
                         <option value="Кілограм">Кілограм</option>
                         <option value="Штук">Штук</option>
@@ -104,34 +116,48 @@
                         <option value="Метр2">Метр2</option>
                         <option value="Метр3">Метр3</option>
                     </select>
-                </div><br><br>
+                </div>
 
                 <label for="additional-fields">Дополнительная информация:</label>
                 <div id="additional-fields"></div>
-                <button type="button" class="btn-add-field" onclick="addField()">Добавить поле для доп. информации</button><br><br>
+                <button type="button" class="btn-add-field" onclick="addField()">Добавить поле для доп. информации</button>
 
                 <label for="description">Описание:</label>
-                <textarea id="description" name="description"></textarea><br><br>
+                <textarea id="description" name="description"></textarea>
 
-                <label for="name">Имя продавца:</label>
-                <input type="text" id="name" name="name" required><br><br>
+                <div class="row">
+                    <label for="name" class="full-width">Имя продавца:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
 
-                <label for="phone">Номер телефона:</label>
-                <input type="tel" id="phone" name="phone" required>
-                <label for="messenger">У меня есть:</label>
-                <input type="checkbox" id="viber" name="messenger" value="Viber"> Viber
-                <input type="checkbox" id="telegram" name="messenger" value="Telegram"> Telegram
-                <input type="checkbox" id="whatsapp" name="messenger" value="WhatsApp"> WhatsApp<br><br>
+                <div class="row">
+                    <label for="phone" class="full-width">Номер телефона:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
 
-                <label for="district">Район:</label>
-                <select id="district" name="district">
-                    <option value="Баловка">Баловка</option>
-                    <option value="Зоря">Зоря</option>
-                    <!-- Добавьте больше опций при необходимости -->
-                </select><br><br>
+                <div class="full-width">
+                    <label for="messenger">У меня есть:</label>
+                    <input type="checkbox" id="viber" name="messenger" value="Viber"> Viber
+                    <input type="checkbox" id="telegram" name="messenger" value="Telegram"> Telegram
+                    <input type="checkbox" id="whatsapp" name="messenger" value="WhatsApp"> WhatsApp
+                </div>
 
-                <label for="address">Адрес:</label>
-                <input type="text" id="address" name="address"><br><br>
+                <div class="row">
+                    <label for="district" class="full-width">Район:</label>
+                    <select id="district" name="district">
+                        <option value="Баловка">Баловка</option>
+                        <option value="Зоря">Зоря</option>
+                        <!-- Добавьте больше опций при необходимости -->
+                    </select>
+                </div>
+
+                <div class="row">
+                    <label for="address" class="full-width">Адрес:</label>
+                    <input type="text" id="address" name="address">
+                </div>
+
+                <label for="edit-password">Придумайте пароль для редактирования объявления:</label>
+                <input type="password" id="edit-password" name="edit-password" required>
 
                 <button type="submit">Подать объявление</button>
             </form>
@@ -167,17 +193,15 @@
 
         function moveUp(button) {
             const fieldDiv = button.parentElement;
-            const previousSibling = fieldDiv.previousElementSibling;
-            if (previousSibling) {
-                fieldDiv.parentNode.insertBefore(fieldDiv, previousSibling);
+            if (fieldDiv.previousElementSibling) {
+                fieldDiv.parentElement.insertBefore(fieldDiv, fieldDiv.previousElementSibling);
             }
         }
 
         function moveDown(button) {
             const fieldDiv = button.parentElement;
-            const nextSibling = fieldDiv.nextElementSibling;
-            if (nextSibling) {
-                fieldDiv.parentNode.insertBefore(nextSibling, fieldDiv);
+            if (fieldDiv.nextElementSibling) {
+                fieldDiv.parentElement.insertBefore(fieldDiv.nextElementSibling, fieldDiv);
             }
         }
 
@@ -197,6 +221,9 @@
             event.preventDefault();
             fileDropArea.classList.remove('is-active');
             fileInput.files = event.dataTransfer.files;
+            if (fileInput.files.length > 0) {
+                fileDropArea.textContent = `${fileInput.files.length} файл(ов) выбрано`;
+            }
         });
 
         fileDropArea.addEventListener('click', () => {
