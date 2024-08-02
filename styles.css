@@ -1,89 +1,56 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #fff;
-    color: #000;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-theme {
+    background-color: black;
+    color: white;
 }
 
 .container {
+    width: 90%;
     max-width: 800px;
-    margin: 0 auto;
+    margin: auto;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
 }
 
-#toggleTheme {
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
+label {
     display: block;
-    margin-bottom: 5px;
+    margin-top: 10px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+input, textarea, select, button {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px;
+    margin-top: 5px;
 }
 
-.photo-upload input {
-    display: block;
-    margin-top: 10px;
-}
-
-#photoPreview {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-#photoPreview img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button[type="submit"] {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
+button {
+    background-color: #007BFF;
+    color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
+    padding: 10px;
+    margin-top: 10px;
 }
 
-button[type="submit"]:hover {
+button:hover {
     background-color: #0056b3;
 }
 
-button[type="button"] {
+#additionalFields div {
+    display: flex;
     margin-top: 10px;
 }
 
-#additionalFields {
-    margin-bottom: 15px;
+#additionalFields input {
+    width: 45%;
+    margin-right: 10px;
 }
 
-.additional-field-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.additional-field-group input {
-    flex: 1;
-}
-
-.additional-field-group button {
-    flex-shrink: 0;
+#additionalFields button {
+    width: 10%;
 }
