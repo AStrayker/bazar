@@ -36,7 +36,7 @@
         </aside>
         
         <main>
-            <form id="ad-form">
+            <form id="adForm">
                 <label for="photos">Фотографии (до 5 фото):</label>
                 <input type="file" id="photos" name="photos" accept="image/*" multiple required><br><br>
 
@@ -103,6 +103,24 @@
         <p>© 2024 Доска объявлений</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        function addField() {
+            const additionalFields = document.getElementById('additional-fields');
+            const fieldCount = additionalFields.children.length / 3;
+            if (fieldCount < 15) {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.innerHTML = `
+                    <input type="text" name="additionalField${fieldCount}Name" placeholder="Название поля">
+                    <input type="text" name="additionalField${fieldCount}Value" placeholder="Информация">
+                    <button type="button" class="btn-remove-field" onclick="removeField(this)">Удалить</button><br><br>
+                `;
+                additionalFields.appendChild(fieldDiv);
+            }
+        }
+
+        function removeField(button) {
+            button.parentElement.remove();
+        }
+    </script>
 </body>
 </html>
