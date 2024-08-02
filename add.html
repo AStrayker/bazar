@@ -5,48 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить объявление</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .row label {
-            flex: 1 1 100%;
-        }
-        .row input, .row select {
-            flex: 1 1 30%;
-            margin-right: 10px;
-        }
-        .row input:last-child, .row select:last-child {
-            margin-right: 0;
-        }
-        .full-width {
-            flex: 1 1 100%;
-        }
-        .file-drop-area {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 25px;
-            border: 2px dashed #ddd;
-            border-radius: 3px;
-            transition: .2s;
-            margin-bottom: 15px;
-        }
-        .file-drop-area.is-active {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        .file-drop-area input[type="file"] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            opacity: 0;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -78,82 +36,91 @@
         </aside>
         
         <main>
-            <form id="adForm">
-                <label for="photos">Фотографии (до 5 фото):</label>
-                <div class="file-drop-area">
+            <form id="ad-form">
+                <label for="images">Фотографии (до 5 фото):</label>
+                <div id="drop-area">
                     Перетащите сюда фотографии или нажмите для выбора
-                    <input type="file" id="photos" name="photos" accept="image/*" multiple required>
+                    <input type="file" id="images" name="images" accept="image/*" multiple required>
                 </div>
 
                 <label for="title">Название объявления:</label>
-                <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
-
+                <input type="text" id="title" name="title" required>
+                
                 <label for="category">Категория:</label>
-                <select id="category" name="category">
-                    <option value="Авто/Мото/Вело">Авто/Мото/Вело</option>
-                    <option value="Одежда, взуття та інше">Одежда, взуття та інше</option>
-                    <!-- Добавьте больше опций при необходимости -->
+                <select id="category" name="category" required>
+                    <option value="auto">Авто/Мото/Вело</option>
+                    <option value="clothing">Одяг, взуття та інше</option>
+                    <option value="fruits">Фрукти та овочі</option>
+                    <option value="grain">Зерно та корма</option>
+                    <option value="food">Продукти харчування</option>
+                    <option value="animals">Тварини та препарати</option>
+                    <option value="tools">Интструменти та запчастини</option>
+                    <option value="garden">Сад та город</option>
+                    <option value="cosmetics">Косметика</option>
+                    <option value="chemicals">Побутова хімія</option>
+                    <option value="other">Інше</option>
                 </select>
 
-                <div class="row">
-                    <label for="price" class="full-width">Цена:</label>
-                    <input type="number" id="price" name="price" required> грн
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <label for="price">Цена:</label>
+                        <input type="text" id="price" name="price" required>
+                    </div>
+                    <div class="flex-item">
+                        <label for="quantity">Количество:</label>
+                        <input type="number" id="quantity" name="quantity" required>
+                    </div>
+                    <div class="flex-item">
+                        <label for="unit">Единица измерения:</label>
+                        <select id="unit" name="unit" required>
+                            <option value="kg">Килограмм</option>
+                            <option value="liters">Литры</option>
+                            <option value="pieces">Штуки</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <label for="quantity" class="full-width">Количество:</label>
-                    <input type="number" id="quantity" name="quantity" required>
-                </div>
-
-                <div class="row">
-                    <label for="unit" class="full-width">Единица измерения:</label>
-                    <select id="unit" name="unit">
-                        <option value="Кілограм">Кілограм</option>
-                        <option value="Штук">Штук</option>
-                        <option value="Літр(ів)">Літр(ів)</option>
-                        <option value="Метрів">Метрів</option>
-                        <option value="Грам">Грам</option>
-                        <option value="Метр2">Метр2</option>
-                        <option value="Метр3">Метр3</option>
-                    </select>
-                </div>
-
-                <label for="additional-fields">Дополнительная информация:</label>
-                <div id="additional-fields"></div>
-                <button type="button" class="btn-add-field" onclick="addField()">Добавить поле для доп. информации</button>
+                <label for="extra-fields">Дополнительная информация:</label>
+                <div id="extra-fields"></div>
+                <button type="button" id="add-extra-field">Добавить поле для доп. информации</button>
 
                 <label for="description">Описание:</label>
-                <textarea id="description" name="description"></textarea>
+                <textarea id="description" name="description" rows="4" required></textarea>
 
-                <div class="row">
-                    <label for="name" class="full-width">Имя продавца:</label>
-                    <input type="text" id="name" name="name" required>
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <label for="seller-name">Имя продавца:</label>
+                        <input type="text" id="seller-name" name="seller-name" required>
+                    </div>
+                    <div class="flex-item">
+                        <label for="phone">Номер телефона:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <label for="phone" class="full-width">Номер телефона:</label>
-                    <input type="tel" id="phone" name="phone" required>
+                <label for="contact-methods">У меня есть:</label>
+                <div id="contact-methods">
+                    <input type="checkbox" id="viber" name="contact-methods" value="Viber"> Viber
+                    <input type="checkbox" id="telegram" name="contact-methods" value="Telegram"> Telegram
+                    <input type="checkbox" id="whatsapp" name="contact-methods" value="WhatsApp"> WhatsApp
                 </div>
 
-                <div class="full-width">
-                    <label for="messenger">У меня есть:</label>
-                    <input type="checkbox" id="viber" name="messenger" value="Viber"> Viber
-                    <input type="checkbox" id="telegram" name="messenger" value="Telegram"> Telegram
-                    <input type="checkbox" id="whatsapp" name="messenger" value="WhatsApp"> WhatsApp
-                </div>
-
-                <div class="row">
-                    <label for="district" class="full-width">Район:</label>
-                    <select id="district" name="district">
-                        <option value="Баловка">Баловка</option>
-                        <option value="Зоря">Зоря</option>
-                        <!-- Добавьте больше опций при необходимости -->
-                    </select>
-                </div>
-
-                <div class="row">
-                    <label for="address" class="full-width">Адрес:</label>
-                    <input type="text" id="address" name="address">
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <label for="region">Район:</label>
+                        <select id="region" name="region" required>
+                            <option value="Zorya">Зоря</option>
+                            <option value="Balovka">Баловка</option>
+                            <option value="Loboykovka">Лобойковка</option>
+                            <option value="Petrikovka">Петриковка</option>
+                            <option value="Partizansk">Партизанск</option>
+                            <option value="Chumaki">Чумаки</option>
+                        </select>
+                    </div>
+                    <div class="flex-item">
+                        <label for="address">Адрес:</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
                 </div>
 
                 <label for="edit-password">Придумайте пароль для редактирования объявления:</label>
@@ -168,78 +135,6 @@
         <p>© 2024 Доска объявлений</p>
     </footer>
 
-    <script>
-        function addField() {
-            const additionalFields = document.getElementById('additional-fields');
-            const fieldCount = additionalFields.children.length / 3;
-            if (fieldCount < 15) {
-                const fieldDiv = document.createElement('div');
-                fieldDiv.className = 'field-row';
-                fieldDiv.innerHTML = `
-                    <input type="text" name="additionalField${fieldCount}Name" placeholder="Название поля">
-                    <input type="text" name="additionalField${fieldCount}Value" placeholder="Информация">
-                    <button type="button" class="btn-remove-field" onclick="removeField(this)">Удалить</button>
-                    <button type="button" class="btn-move-up" onclick="moveUp(this)">↑</button>
-                    <button type="button" class="btn-move-down" onclick="moveDown(this)">↓</button>
-                    <br><br>
-                `;
-                additionalFields.appendChild(fieldDiv);
-            }
-        }
-
-        function removeField(button) {
-            button.parentElement.remove();
-        }
-
-        function moveUp(button) {
-            const fieldDiv = button.parentElement;
-            if (fieldDiv.previousElementSibling) {
-                fieldDiv.parentElement.insertBefore(fieldDiv, fieldDiv.previousElementSibling);
-            }
-        }
-
-        function moveDown(button) {
-            const fieldDiv = button.parentElement;
-            if (fieldDiv.nextElementSibling) {
-                fieldDiv.parentElement.insertBefore(fieldDiv.nextElementSibling, fieldDiv);
-            }
-        }
-
-        const fileDropArea = document.querySelector('.file-drop-area');
-        const fileInput = document.getElementById('photos');
-
-        fileDropArea.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            fileDropArea.classList.add('is-active');
-        });
-
-        fileDropArea.addEventListener('dragleave', () => {
-            fileDropArea.classList.remove('is-active');
-        });
-
-        fileDropArea.addEventListener('drop', (event) => {
-            event.preventDefault();
-            fileDropArea.classList.remove('is-active');
-            fileInput.files = event.dataTransfer.files;
-            if (fileInput.files.length > 0) {
-                fileDropArea.textContent = `${fileInput.files.length} файл(ов) выбрано`;
-            }
-        });
-
-        fileDropArea.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length > 0) {
-                fileDropArea.textContent = `${fileInput.files.length} файл(ов) выбрано`;
-            }
-        });
-
-        document.getElementById('adForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            alert('Форма отправлена!');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
