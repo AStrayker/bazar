@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+с<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -85,27 +85,44 @@
                     <input type="file" id="photos" name="photos" accept="image/*" multiple required>
                 </div>
 
-                <label for="title">Название объявления:</label>
-                <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
-
-                <label for="category">Категория:</label>
+               <table border="0" style="width: 100%">
+	<tbody>
+		<tr>
+			<td><label for="photos">Фотографии (до 5 фото):</label>
+                <div class="file-drop-area">
+                    Перетащите сюда фотографии или нажмите для выбора
+                    <input type="file" id="photos" name="photos" accept="image/*" multiple required>
+                </div></td>
+		</tr>
+		<tr>
+			<td><label for="title">Название объявления:</label>
+                <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required></td>
+		</tr>
+		<tr>
+			<td> <label for="category">Категория:</label>
                 <select id="category" name="category">
                     <option value="Авто/Мото/Вело">Авто/Мото/Вело</option>
                     <option value="Одежда, взуття та інше">Одежда, взуття та інше</option>
                     <!-- Добавьте больше опций при необходимости -->
-                </select>
-
-                <div class="row">
+                </select></td>
+		</tr>
+		<tr>
+			<td>4</td>
+		</tr>
+		<tr>
+			<td>
+				<table cellpadding="1" cellspacing="1" style="width: 100%">
+					<tbody>
+						<tr>
+							<td><div class="row">
                     <label for="price" class="full-width">Цена:</label>
                     <input type="number" id="price" name="price" required> грн
-                </div>
-
-                <div class="row">
+                </div></td>
+							<td><div class="row">
                     <label for="quantity" class="full-width">Количество:</label>
                     <input type="number" id="quantity" name="quantity" required>
-                </div>
-
-                <div class="row">
+                </div></td>
+							<td> <div class="row">
                     <label for="unit" class="full-width">Единица измерения:</label>
                     <select id="unit" name="unit">
                         <option value="Кілограм">Кілограм</option>
@@ -116,7 +133,40 @@
                         <option value="Метр2">Метр2</option>
                         <option value="Метр3">Метр3</option>
                     </select>
-                </div>
+                </div></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>6</td>
+		</tr>
+		<tr>
+			<td>7</td>
+		</tr>
+		<tr>
+			<td>8</td>
+		</tr>
+		<tr>
+			<td>9</td>
+		</tr>
+		<tr>
+			<td>10</td>
+		</tr>
+		<tr>
+			<td>11</td>
+		</tr>
+		<tr>
+			<td>12</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+<p>&nbsp;</p>
+
 
                 <label for="additional-fields">Дополнительная информация:</label>
                 <div id="additional-fields"></div>
