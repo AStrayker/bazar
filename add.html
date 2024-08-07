@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Додати Оголошення</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
     <div class="container">
@@ -72,5 +78,65 @@
         </form>
     </div>
     <script src="scripts.js"></script>
+    <script>
+        // Your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        document.getElementById('addAdForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
+            const unit = document.getElementById('unit').value;
+            const description = document.getElementById('description').value;
+            const sellerName = document.getElementById('sellerName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const region = document.getElementById('region').value;
+            const address = document.getElementById('address').value;
+
+            const photos = document.getElementById('photos').files;
+            const photoUrls = [];
+
+            for (let i = 0; i < photos.length; i++) {
+                const file = photos[i];
+                const storageRef = storage.ref();
+                const photoRef = storageRef.child(`photos/${file.name}`);
+                await photoRef.put(file);
+                const photoUrl = await photoRef.getDownloadURL();
+                photoUrls.push(photoUrl);
+            }
+
+            // Save ad to Firestore
+            await db.collection('ads').add({
+                title,
+                price,
+                quantity,
+                unit,
+                description,
+                sellerName,
+                phoneNumber,
+                region,
+                address,
+                photos: photoUrls,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert('Оголошення додано успішно!');
+            document.getElementById('addAdForm').reset();
+        });
+    </script>
 </body>
 </html>
