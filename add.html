@@ -35,7 +35,6 @@
             border-radius: 3px;
             transition: .2s;
             margin-bottom: 15px;
-            text-align: center;
         }
         .file-drop-area.is-active {
             background-color: rgba(0, 0, 0, 0.05);
@@ -65,53 +64,47 @@
         <aside class="sidebar">
             <ul>
                 <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
-                <li><a href="category.html?category=clothing">Одежда, взуття та інше</a></li>
+                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
                 <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
                 <li><a href="category.html?category=grain">Зерно та корма</a></li>
-                <li><a href="category.html?category=food">Продукты питания</a></li>
-                <li><a href="category.html?category=animals">Животные и препараты</a></li>
-                <li><a href="category.html?category=tools">Инструменты и запчасти</a></li>
-                <li><a href="category.html?category=garden">Сад и огород</a></li>
+                <li><a href="category.html?category=food">Продукти харчування</a></li>
+                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
+                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
+                <li><a href="category.html?category=garden">Сад та город</a></li>
                 <li><a href="category.html?category=cosmetics">Косметика</a></li>
-                <li><a href="category.html?category=chemicals">Бытовая химия</a></li>
-                <li><a href="category.html?category=other">Прочее</a></li>
+                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
+                <li><a href="category.html?category=other">Інше</a></li>
             </ul>
         </aside>
         
         <main>
             <form id="adForm">
-                <!-- Photo Upload Section -->
                 <label for="photos">Фотографии (до 5 фото):</label>
                 <div class="file-drop-area">
                     Перетащите сюда фотографии или нажмите для выбора
                     <input type="file" id="photos" name="photos" accept="image/*" multiple required>
                 </div>
 
-                <!-- Ad Title -->
                 <label for="title">Название объявления:</label>
                 <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
 
-                <!-- Category -->
                 <label for="category">Категория:</label>
                 <select id="category" name="category">
                     <option value="Авто/Мото/Вело">Авто/Мото/Вело</option>
                     <option value="Одежда, взуття та інше">Одежда, взуття та інше</option>
-                    <!-- Add more options as needed -->
+                    <!-- Добавьте больше опций при необходимости -->
                 </select>
 
-                <!-- Price -->
                 <div class="row">
                     <label for="price" class="full-width">Цена:</label>
                     <input type="number" id="price" name="price" required> грн
                 </div>
 
-                <!-- Quantity -->
                 <div class="row">
                     <label for="quantity" class="full-width">Количество:</label>
                     <input type="number" id="quantity" name="quantity" required>
                 </div>
 
-                <!-- Unit -->
                 <div class="row">
                     <label for="unit" class="full-width">Единица измерения:</label>
                     <select id="unit" name="unit">
@@ -125,16 +118,18 @@
                     </select>
                 </div>
 
-                <!-- Additional Information Fields -->
                 <label for="additional-fields">Дополнительная информация:</label>
                 <div id="additional-fields"></div>
                 <button type="button" class="btn-add-field" onclick="addField()">Добавить поле для доп. информации</button>
 
-                <!-- Description -->
                 <label for="description">Описание:</label>
                 <textarea id="description" name="description"></textarea>
 
-                <!-- Seller Information -->
+                <div class="file-drop-area">
+                    Перетащите сюда HTML файл или нажмите для выбора
+                    <input type="file" id="htmlFile" name="htmlFile" accept=".html">
+                </div>
+
                 <div class="row">
                     <label for="name" class="full-width">Имя продавца:</label>
                     <input type="text" id="name" name="name" required>
@@ -145,7 +140,6 @@
                     <input type="tel" id="phone" name="phone" required>
                 </div>
 
-                <!-- Messenger Options -->
                 <div class="full-width">
                     <label for="messenger">У меня есть:</label>
                     <input type="checkbox" id="viber" name="messenger" value="Viber"> Viber
@@ -153,27 +147,24 @@
                     <input type="checkbox" id="whatsapp" name="messenger" value="WhatsApp"> WhatsApp
                 </div>
 
-                <!-- District -->
                 <div class="row">
                     <label for="district" class="full-width">Район:</label>
                     <select id="district" name="district">
                         <option value="Баловка">Баловка</option>
                         <option value="Зоря">Зоря</option>
-                        <!-- Add more options as needed -->
+                        <!-- Добавьте больше опций при необходимости -->
                     </select>
                 </div>
 
-                <!-- Address -->
                 <div class="row">
                     <label for="address" class="full-width">Адрес:</label>
                     <input type="text" id="address" name="address">
                 </div>
 
-                <!-- Edit Password -->
                 <label for="edit-password">Придумайте пароль для редактирования объявления:</label>
                 <input type="password" id="edit-password" name="edit-password" required>
 
-                <!-- Submit Button -->
+                <button type="button" onclick="previewAd()">Предпросмотр</button>
                 <button type="submit">Подать объявление</button>
             </form>
         </main>
@@ -220,22 +211,39 @@
             }
         }
 
-        document.getElementById('photos').addEventListener('change', function(e) {
-            const fileDropArea = document.querySelector('.file-drop-area');
-            const filesCount = e.target.files.length;
-            if (filesCount) {
-                const textContainer = document.createElement('span');
-                textContainer.innerText = `${filesCount} file(s) selected`;
-                fileDropArea.innerHTML = '';
-                fileDropArea.appendChild(textContainer);
+        document.getElementById('htmlFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    document.getElementById('description').value = content;
+                };
+                reader.readAsText(file);
             }
         });
 
-        // Additional form validation logic can be added here
+        function previewAd() {
+            const adForm = document.getElementById('adForm');
+            const formData = new FormData(adForm);
+            const previewWindow = window.open('', 'Ad Preview', 'width=800,height=600');
+            previewWindow.document.write('<html><head><title>Предпросмотр объявления</title></head><body>');
+            for (const [key, value] of formData.entries()) {
+                previewWindow.document.write(`<p><strong>${key}:</strong> ${value}</p>`);
+            }
+            previewWindow.document.write('</body></html>');
+            previewWindow.document.close();
+        }
 
-        document.getElementById('adForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Форма успешно отправлена!');
+        document.getElementById('photos').addEventListener('change', function(event) {
+            const input = event.target;
+            const fileDropArea = input.closest('.file-drop-area');
+            const files = input.files;
+            if (files.length > 0) {
+                fileDropArea.classList.add('is-active');
+            } else {
+                fileDropArea.classList.remove('is-active');
+            }
         });
     </script>
 </body>
