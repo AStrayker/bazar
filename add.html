@@ -1,125 +1,76 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить объявление</title>
+    <title>Додати Оголошення</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
-    <header>
-        <div class="logo">Доска объявлений</div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Главная</a></li>
-                <li><a href="services.html">Услуги</a></li>
-            </ul>
-        </nav>
-    </header>
-    
     <div class="container">
-        <form id="adForm">
-            <h2>Добавить объявление</h2>
-            <div class="form-group">
-                <label for="photos">Фото</label>
-                <input type="file" id="photos" multiple accept="image/*">
+        <button id="toggleTheme">Змінити фон</button>
+        <h1>Додати Оголошення</h1>
+        <form id="addAdForm">
+            <label for="photos">Фото (до 5 фото):</label>
+            <input type="file" id="photos" name="photos" accept="image/*" multiple>
+            
+            <label for="title">Назва оголошення:</label>
+            <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
+
+            <label for="price">Ціна:</label>
+            <input type="number" id="price" name="price" placeholder="50 грн" required>
+            
+            <label for="quantity">Кількість:</label>
+            <input type="number" id="quantity" name="quantity" placeholder="10" required>
+
+            <label for="unit">Одиниця виміру:</label>
+            <select id="unit" name="unit">
+                <option value="Кілограм">Кілограм</option>
+                <option value="Штук">Штук</option>
+                <option value="Літр(ів)">Літр(ів)</option>
+                <option value="Метрів">Метрів</option>
+                <option value="Грам">Грам</option>
+                <option value="Метр2">Метр2</option>
+                <option value="Метр3">Метр3</option>
+            </select>
+
+            <label for="additionalFields">Додаткові поля:</label>
+            <div id="additionalFields"></div>
+            <button type="button" id="addFieldButton">Додати поле для доп. інформації</button>
+
+            <label for="description">Опис:</label>
+            <textarea id="description" name="description"></textarea>
+
+            <label for="sellerName">Ім'я продавця:</label>
+            <input type="text" id="sellerName" name="sellerName" required>
+
+            <label for="phoneNumber">Номер телефону:</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" required>
+            <div>
+                <label for="viber">Вайбер</label>
+                <input type="checkbox" id="viber" name="messenger" value="viber">
+                <label for="telegram">Телеграм</label>
+                <input type="checkbox" id="telegram" name="messenger" value="telegram">
+                <label for="whatsapp">Вацап</label>
+                <input type="checkbox" id="whatsapp" name="messenger" value="whatsapp">
             </div>
-            <div class="form-group">
-                <label for="title">Название объявления</label>
-                <input type="text" id="title" placeholder="Продам курячі яйца" required>
-            </div>
-            <div class="form-group">
-                <label for="category">Категория</label>
-                <select id="category" required>
-                    <option value="auto">Авто/Мото/Вело</option>
-                    <option value="clothing">Одяг, взуття та інше</option>
-                    <option value="fruits">Фрукти та овочі</option>
-                    <option value="grain">Зерно та корма</option>
-                    <option value="food">Продукти харчування</option>
-                    <option value="animals">Тварини та препарати</option>
-                    <option value="tools">Интструменти та запчастини</option>
-                    <option value="garden">Сад та город</option>
-                    <option value="cosmetics">Косметика</option>
-                    <option value="chemicals">Побутова хімія</option>
-                    <option value="other">Інше</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="price">Цена</label>
-                <input type="number" id="price" required>
-                <label for="quantity">Количество</label>
-                <input type="number" id="quantity" required>
-                <label for="unit">Единица измерения</label>
-                <select id="unit" required>
-                    <option value="kg">Кілограм</option>
-                    <option value="pcs">Штук</option>
-                    <option value="liters">Літр(ів)</option>
-                    <option value="meters">Метрів</option>
-                    <option value="grams">Грам</option>
-                    <option value="m2">Метр2</option>
-                    <option value="m3">Метр3</option>
-                </select>
-            </div>
-            <div id="additionalFieldsContainer">
-                <div class="form-group">
-                    <button type="button" onclick="addAdditionalField()">Добавить поле для доп. информации</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="description">Описание</label>
-                <textarea id="description" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="name">Имя продавца</label>
-                <input type="text" id="name" required>
-            </div>
-            <div class="form-group">
-                <label for="phone">Номер телефона</label>
-                <input type="text" id="phone" required>
-                <div>
-                    <input type="checkbox" id="viber"> Вайбер
-                    <input type="checkbox" id="telegram"> Телеграм
-                    <input type="checkbox" id="whatsapp"> Вацап
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="location">Я живу в:</label>
-                <select id="location" required>
-                    <option value="Zorya">Зоря</option>
-                    <option value="Balovka">Баловка</option>
-                    <option value="Loboykovka">Лобойковка</option>
-                    <option value="Petrikovka">Петриковка</option>
-                    <option value="Partizansk">Партизанск</option>
-                    <option value="Chumaki">Чумаки</option>
-                </select>
-                <label for="address">По адресу</label>
-                <input type="text" id="address">
-            </div>
-            <button type="submit">Добавить объявление</button>
+
+            <label for="region">Я живу в:</label>
+            <select id="region" name="region">
+                <option value="Зоря">Зоря</option>
+                <option value="Баловка">Баловка</option>
+                <option value="Лобойковка">Лобойковка</option>
+                <option value="Петриковка">Петриковка</option>
+                <option value="Партизанск">Партизанск</option>
+                <option value="Чумаки">Чумаки</option>
+            </select>
+
+            <label for="address">По адресу:</label>
+            <input type="text" id="address" name="address">
+
+            <button type="submit">Додати оголошення</button>
         </form>
     </div>
-    
-    <footer>
-        <p>© 2024 Доска объявлений</p>
-    </footer>
-
-    <script src="script.js"></script>
-    <script>
-        // Your Firebase configuration
-        var firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
