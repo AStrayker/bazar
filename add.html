@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить объявление</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
     <header>
@@ -15,48 +19,76 @@
                 <li><a href="services.html">Услуги</a></li>
             </ul>
         </nav>
-        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
     </header>
     
     <div class="container">
-        <aside class="sidebar">
-            <ul>
-                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
-                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
-                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
-                <li><a href="category.html?category=grain">Зерно та корма</a></li>
-                <li><a href="category.html?category=food">Продукти харчування</a></li>
-                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
-                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
-                <li><a href="category.html?category=garden">Сад та город</a></li>
-                <li><a href="category.html?category=cosmetics">Косметика</a></li>
-                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
-                <li><a href="category.html?category=other">Інше</a></li>
-            </ul>
-        </aside>
-        
-        <main>
-            <form id="ad-form">
-                <label for="title">Заголовок</label>
-                <input type="text" id="title" name="title" required>
-                
-                <label for="image">Изображение</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-                
-                <label for="date">Дата публикации</label>
-                <input type="date" id="date" name="date" required>
-                
+        <form id="adForm">
+            <h2>Добавить объявление</h2>
+            <div class="form-group">
+                <label for="photos">Фото</label>
+                <input type="file" id="photos" multiple accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="title">Название объявления</label>
+                <input type="text" id="title" placeholder="Продам курячі яйца" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Категория</label>
+                <select id="category" required>
+                    <option value="auto">Авто/Мото/Вело</option>
+                    <option value="clothing">Одяг, взуття та інше</option>
+                    <option value="fruits">Фрукти та овочі</option>
+                    <option value="grain">Зерно та корма</option>
+                    <option value="food">Продукти харчування</option>
+                    <option value="animals">Тварини та препарати</option>
+                    <option value="tools">Интструменти та запчастини</option>
+                    <option value="garden">Сад та город</option>
+                    <option value="cosmetics">Косметика</option>
+                    <option value="chemicals">Побутова хімія</option>
+                    <option value="other">Інше</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="price">Цена</label>
-                <input type="text" id="price" name="price" required>
-                
-                <label for="field1">Дополнительное поле 1</label>
-                <input type="text" id="field1" name="field1" required>
-                
-                <label for="field2">Дополнительное поле 2</label>
-                <input type="text" id="field2" name="field2" required>
-                
-                <label for="region">Регион</label>
-                <select id="region" name="region" required>
+                <input type="number" id="price" required>
+                <label for="quantity">Количество</label>
+                <input type="number" id="quantity" required>
+                <label for="unit">Единица измерения</label>
+                <select id="unit" required>
+                    <option value="kg">Кілограм</option>
+                    <option value="pcs">Штук</option>
+                    <option value="liters">Літр(ів)</option>
+                    <option value="meters">Метрів</option>
+                    <option value="grams">Грам</option>
+                    <option value="m2">Метр2</option>
+                    <option value="m3">Метр3</option>
+                </select>
+            </div>
+            <div id="additionalFieldsContainer">
+                <div class="form-group">
+                    <button type="button" onclick="addAdditionalField()">Добавить поле для доп. информации</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea id="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="name">Имя продавца</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Номер телефона</label>
+                <input type="text" id="phone" required>
+                <div>
+                    <input type="checkbox" id="viber"> Вайбер
+                    <input type="checkbox" id="telegram"> Телеграм
+                    <input type="checkbox" id="whatsapp"> Вацап
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="location">Я живу в:</label>
+                <select id="location" required>
                     <option value="Zorya">Зоря</option>
                     <option value="Balovka">Баловка</option>
                     <option value="Loboykovka">Лобойковка</option>
@@ -64,10 +96,11 @@
                     <option value="Partizansk">Партизанск</option>
                     <option value="Chumaki">Чумаки</option>
                 </select>
-                
-                <button type="submit">Добавить объявление</button>
-            </form>
-        </main>
+                <label for="address">По адресу</label>
+                <input type="text" id="address">
+            </div>
+            <button type="submit">Добавить объявление</button>
+        </form>
     </div>
     
     <footer>
@@ -75,5 +108,18 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Your Firebase configuration
+        var firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
 </body>
 </html>
