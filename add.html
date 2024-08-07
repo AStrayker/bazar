@@ -1,76 +1,79 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Додати Оголошення</title>
+    <title>Добавить объявление</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <div class="logo">Доска объявлений</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="services.html">Услуги</a></li>
+            </ul>
+        </nav>
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    </header>
+    
     <div class="container">
-        <button id="toggleTheme">Змінити фон</button>
-        <h1>Додати Оголошення</h1>
-        <form id="addAdForm">
-            <label for="photos">Фото (до 5 фото):</label>
-            <input type="file" id="photos" name="photos" accept="image/*" multiple>
-            
-            <label for="title">Назва оголошення:</label>
-            <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
-
-            <label for="price">Ціна:</label>
-            <input type="number" id="price" name="price" placeholder="50 грн" required>
-            
-            <label for="quantity">Кількість:</label>
-            <input type="number" id="quantity" name="quantity" placeholder="10" required>
-
-            <label for="unit">Одиниця виміру:</label>
-            <select id="unit" name="unit">
-                <option value="Кілограм">Кілограм</option>
-                <option value="Штук">Штук</option>
-                <option value="Літр(ів)">Літр(ів)</option>
-                <option value="Метрів">Метрів</option>
-                <option value="Грам">Грам</option>
-                <option value="Метр2">Метр2</option>
-                <option value="Метр3">Метр3</option>
-            </select>
-
-            <label for="additionalFields">Додаткові поля:</label>
-            <div id="additionalFields"></div>
-            <button type="button" id="addFieldButton">Додати поле для доп. інформації</button>
-
-            <label for="description">Опис:</label>
-            <textarea id="description" name="description"></textarea>
-
-            <label for="sellerName">Ім'я продавця:</label>
-            <input type="text" id="sellerName" name="sellerName" required>
-
-            <label for="phoneNumber">Номер телефону:</label>
-            <input type="tel" id="phoneNumber" name="phoneNumber" required>
-            <div>
-                <label for="viber">Вайбер</label>
-                <input type="checkbox" id="viber" name="messenger" value="viber">
-                <label for="telegram">Телеграм</label>
-                <input type="checkbox" id="telegram" name="messenger" value="telegram">
-                <label for="whatsapp">Вацап</label>
-                <input type="checkbox" id="whatsapp" name="messenger" value="whatsapp">
-            </div>
-
-            <label for="region">Я живу в:</label>
-            <select id="region" name="region">
-                <option value="Зоря">Зоря</option>
-                <option value="Баловка">Баловка</option>
-                <option value="Лобойковка">Лобойковка</option>
-                <option value="Петриковка">Петриковка</option>
-                <option value="Партизанск">Партизанск</option>
-                <option value="Чумаки">Чумаки</option>
-            </select>
-
-            <label for="address">По адресу:</label>
-            <input type="text" id="address" name="address">
-
-            <button type="submit">Додати оголошення</button>
-        </form>
+        <aside class="sidebar">
+            <ul>
+                <li><a href="category.html?category=auto">Авто/Мото/Вело</a></li>
+                <li><a href="category.html?category=clothing">Одяг, взуття та інше</a></li>
+                <li><a href="category.html?category=fruits">Фрукти та овочі</a></li>
+                <li><a href="category.html?category=grain">Зерно та корма</a></li>
+                <li><a href="category.html?category=food">Продукти харчування</a></li>
+                <li><a href="category.html?category=animals">Тварини та препарати</a></li>
+                <li><a href="category.html?category=tools">Интструменти та запчастини</a></li>
+                <li><a href="category.html?category=garden">Сад та город</a></li>
+                <li><a href="category.html?category=cosmetics">Косметика</a></li>
+                <li><a href="category.html?category=chemicals">Побутова хімія</a></li>
+                <li><a href="category.html?category=other">Інше</a></li>
+            </ul>
+        </aside>
+        
+        <main>
+            <form id="ad-form">
+                <label for="title">Заголовок</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="image">Изображение</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                
+                <label for="date">Дата публикации</label>
+                <input type="date" id="date" name="date" required>
+                
+                <label for="price">Цена</label>
+                <input type="text" id="price" name="price" required>
+                
+                <label for="field1">Дополнительное поле 1</label>
+                <input type="text" id="field1" name="field1" required>
+                
+                <label for="field2">Дополнительное поле 2</label>
+                <input type="text" id="field2" name="field2" required>
+                
+                <label for="region">Регион</label>
+                <select id="region" name="region" required>
+                    <option value="Zorya">Зоря</option>
+                    <option value="Balovka">Баловка</option>
+                    <option value="Loboykovka">Лобойковка</option>
+                    <option value="Petrikovka">Петриковка</option>
+                    <option value="Partizansk">Партизанск</option>
+                    <option value="Chumaki">Чумаки</option>
+                </select>
+                
+                <button type="submit">Добавить объявление</button>
+            </form>
+        </main>
     </div>
-    <script src="scripts.js"></script>
+    
+    <footer>
+        <p>© 2024 Доска объявлений</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
