@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить объявление</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <!-- Add Firebase products that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
     <header>
@@ -21,62 +15,61 @@
                 <li><a href="services.html">Услуги</a></li>
             </ul>
         </nav>
-        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
     </header>
-    
+
     <div class="container">
-        <h1>Добавить объявление</h1>
-        <form id="ad-form">
-            <div>
-                <label for="images">Фото (до 5 фото):</label>
-                <input type="file" id="images" name="images" multiple accept="image/*" required>
-            </div>
-            <div>
-                <label for="title">Название объявления:</label>
-                <input type="text" id="title" name="title" placeholder="Продам курячі яйца" required>
-            </div>
-            <div>
-                <label for="price">Цена:</label>
-                <input type="number" id="price" name="price" required>
-                <label for="quantity">Количество:</label>
-                <input type="number" id="quantity" name="quantity" required>
-                <label for="unit">Един. измерения:</label>
-                <select id="unit" name="unit">
+        <main>
+            <h1>Добавить объявление</h1>
+            <form id="ad-form">
+                <label for="ad-photos">Фото:</label>
+                <input type="file" id="ad-photos" name="photos" multiple accept="image/*" required>
+
+                <label for="ad-title">Название объявления:</label>
+                <input type="text" id="ad-title" name="title" placeholder="Продам курячі яйца" required>
+
+                <label for="ad-price">Цена:</label>
+                <input type="number" id="ad-price" name="price" required>
+
+                <label for="ad-quantity">Количество:</label>
+                <input type="number" id="ad-quantity" name="quantity" required>
+
+                <label for="ad-unit">Единица измерения:</label>
+                <select id="ad-unit" name="unit" required>
                     <option value="kg">Кілограм</option>
                     <option value="pcs">Штук</option>
-                    <option value="l">Літр(ів)</option>
+                    <option value="ltr">Літр(ів)</option>
                     <option value="m">Метрів</option>
                     <option value="g">Грам</option>
                     <option value="m2">Метр2</option>
                     <option value="m3">Метр3</option>
                 </select>
-            </div>
-            <div>
-                <label for="additional-fields">Дополнительные поля:</label>
-                <div id="additional-fields"></div>
-                <button type="button" onclick="addAdditionalField()">Добавить поле для доп. информации</button>
-            </div>
-            <div>
-                <label for="description">Описание:</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-            <div>
-                <label for="seller-name">Имя продавца:</label>
-                <input type="text" id="seller-name" name="seller-name" required>
-            </div>
-            <div>
-                <label for="phone">Номер телефона:</label>
-                <input type="tel" id="phone" name="phone" required>
-                <label for="viber">Вайбер</label>
-                <input type="checkbox" id="viber" name="messenger" value="viber">
-                <label for="telegram">Телеграм</label>
-                <input type="checkbox" id="telegram" name="messenger" value="telegram">
-                <label for="whatsapp">Вацап</label>
-                <input type="checkbox" id="whatsapp" name="messenger" value="whatsapp">
-            </div>
-            <div>
-                <label for="region">Район:</label>
-                <select id="region" name="region">
+
+                <label for="ad-category">Категория:</label>
+                <select id="ad-category" name="category" required>
+                    <option value="auto">Авто/Мото/Вело</option>
+                    <option value="clothing">Одяг, взуття та інше</option>
+                    <option value="fruits">Фрукти та овочі</option>
+                    <option value="grain">Зерно та корма</option>
+                    <option value="food">Продукти харчування</option>
+                    <option value="animals">Тварини та препарати</option>
+                    <option value="tools">Интструменти та запчастини</option>
+                    <option value="garden">Сад та город</option>
+                    <option value="cosmetics">Косметика</option>
+                    <option value="chemicals">Побутова хімія</option>
+                    <option value="other">Інше</option>
+                </select>
+
+                <label for="ad-description">Описание:</label>
+                <textarea id="ad-description" name="description" rows="4"></textarea>
+
+                <label for="ad-seller-name">Имя продавца:</label>
+                <input type="text" id="ad-seller-name" name="sellerName" required>
+
+                <label for="ad-seller-phone">Номер телефона:</label>
+                <input type="tel" id="ad-seller-phone" name="sellerPhone" required>
+
+                <label for="ad-location">Район:</label>
+                <select id="ad-location" name="location" required>
                     <option value="Zorya">Зоря</option>
                     <option value="Balovka">Баловка</option>
                     <option value="Loboykovka">Лобойковка</option>
@@ -84,32 +77,23 @@
                     <option value="Partizansk">Партизанск</option>
                     <option value="Chumaki">Чумаки</option>
                 </select>
-            </div>
-            <div>
-                <label for="address">Адрес:</label>
-                <input type="text" id="address" name="address">
-            </div>
-            <button type="submit">Добавить объявление</button>
-        </form>
+
+                <label for="ad-address">Адрес:</label>
+                <input type="text" id="ad-address" name="address" required>
+
+                <button type="submit">Добавить объявление</button>
+            </form>
+        </main>
     </div>
-    
+
     <footer>
         <p>© 2024 Доска объявлений</p>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <script src="script.js"></script>
-    <script>
-        // Your Firebase configuration
-        var firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    </script>
 </body>
 </html>
