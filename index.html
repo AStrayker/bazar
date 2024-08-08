@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -10,7 +11,7 @@
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
     <header>
@@ -58,18 +59,8 @@
                 <button onclick="location.href='add.html'">Добавить объявление</button>
             </div>
             
-            <div class="ad-listings">
-                <div class="ad-card">
-                    <img src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS6PFCfUEMKtd0wloP6EdPs2D6uEPDRKxPliokqrdFK5fNK8l7M_5kXX4XREEX_507Ufhr5-c0HFQ-1kzFqy4q4_7szhrgYO1C7Mt_DwnGx52PBi53G9sSvjcW0KbLj44kk9Spk1X4&usqp=CAc" alt="Ad Image">
-                    <div class="ad-details">
-                        <span class="ad-date">Дата публикации: 01.01.2024</span>
-                        <span class="ad-price">$100</span>
-                        <span class="ad-field1">Поле 1</span>
-                        <span class="ad-field2">Поле 2</span>
-                        <p class="ad-title">Название товара...</p>
-                    </div>
-                </div>
-                <!-- More ad-cards -->
+            <div class="ad-listings" id="adsList">
+                <!-- Объявления будут загружаться сюда -->
             </div>
         </main>
     </div>
@@ -77,13 +68,13 @@
     <footer>
         <p>© 2024 Доска объявлений</p>
     </footer>
-
-    <script src="script5.js"></script>
+    
     <script>
-        // Your Firebase configuration
+        // Firebase configuration
         var firebaseConfig = {
             apiKey: "AIzaSyDb6ziFzZtcjWPf_U_Ct2KmSW5dgKd3wHI",
             authDomain: "bazar-27a38.firebaseapp.com",
+            databaseURL: "https://bazar-27a38.firebaseio.com", // Добавляем URL базы данных
             projectId: "bazar-27a38",
             storageBucket: "bazar-27a38.appspot.com",
             messagingSenderId: "302193072754",
@@ -91,6 +82,33 @@
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+
+        // Reference to the database service
+        var database = firebase.database();
+        var adsRef = database.ref('ads');
+
+        // Load ads from Firebase and display them
+        adsRef.on('value', function(snapshot) {
+            var adsList = document.getElementById('adsList');
+            adsList.innerHTML = ''; // Clear the list before adding new elements
+
+            snapshot.forEach(function(childSnapshot) {
+                var ad = childSnapshot.val();
+                var adElement = document.createElement('div');
+                adElement.className = 'ad-card';
+                adElement.innerHTML = 
+                    <img src="https://via.placeholder.com/150" alt="Ad Image">
+                    <div class="ad-details">
+                        <span class="ad-date">Дата публикации: ${new Date().toLocaleDateString()}</span>
+                        <span class="ad-price">${ad.price}</span>
+                        <span class="ad-field1">${ad.field1}</span>
+                        <span class="ad-field2">${ad.field2}</span>
+                        <p class="ad-title">${ad.title}</p>
+                    </div>
+                ;
+                adsList.appendChild(adElement);
+            });
+        });
     </script>
 </body>
 </html>
