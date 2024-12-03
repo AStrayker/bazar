@@ -84,7 +84,7 @@
             text-decoration: underline;
         }
         
-        /* Поиск */
+        /* Поиск и кнопки */
         .search-container {
             display: flex;
             align-items: center;
@@ -95,7 +95,28 @@
             padding: 8px;
             font-size: 14px;
             width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
+        .buttons-container {
+            display: flex;
+            gap: 15px;
+            margin-left: 20px;
+        }
+        .buttons-container button {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            background-color: #F37021;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .buttons-container button:hover {
+            background-color: #e05e11;
+        }
+
         .suggestions {
             border: 1px solid #ddd;
             max-height: 100px;
@@ -175,6 +196,12 @@
                 <div class="search-container">
                     <input type="text" id="search" class="search-bar" placeholder="Поиск на странице">
                     <div class="suggestions" id="suggestions"></div>
+
+                    <!-- Кнопки "Объявления" и "Компания" рядом с поиском -->
+                    <div class="buttons-container">
+                        <button onclick="highlightMenu('ads')">Объявления</button>
+                        <button onclick="highlightMenu('companies')">Компания</button>
+                    </div>
                 </div>
             </div>
             <div class="content-area" id="content-area">
@@ -236,16 +263,4 @@
 
         // Функция подсветки выбранного раздела
         function highlightMenu(section) {
-            // Снимаем подсветку с всех пунктов
-            document.querySelectorAll('.menu li').forEach(item => item.classList.remove('active'));
-            
-            // Добавляем подсветку выбранному разделу
-            if (section === 'ads') {
-                document.getElementById('ads-section').classList.add('active');
-            } else if (section === 'companies') {
-                document.getElementById('companies-section').classList.add('active');
-            }
-        }
-    </script>
-</body>
-</html>
+            // Снимаем подсветку с
