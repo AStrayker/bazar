@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать объявление</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-container input,
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Редактировать объявление</h2>
+        <input type="text" id="editTitle" placeholder="Заголовок объявления">
+        <textarea id="editDescription" placeholder="Описание объявления"></textarea>
+        <input type="number" id="editPrice" placeholder="Цена">
+        <input type="file" id="editImage" accept="image/*">
+        <img id="imagePreview" class="image-preview" style="display: none;">
+        <button onclick="saveEditedAd()">Сохранить изменения</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
+            authDomain: "bazar-c6315.firebaseapp.com",
+            databaseURL: "https://bazar-c6315-default-rtdb.firebaseio.com",
+            projectId: "bazar-c6315",
+            storageBucket: "bazar-c6315.firebasestorage.app",
+            messagingSenderId: "516633997350",
+            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        let currentUser = null;
+        let adId = new URLSearchParams(window.location.search).get('adId');
+
+        // Проверка на авторизацию
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loadAdData();
+            } else {
+                alert("Пожалуйста, войдите в систему.");
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Функция загрузки данных объявления для редактирования
+        function loadAdData() {
+            const adRef = ref(database, 'ads/' + currentUser.uid + '/' + adId);
+            get(adRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const ad = snapshot.val();
+                    document.getElementById('editTitle').value = ad.title;
+                    document.getElementById('editDescription').value = ad.description;
+                    document.getElementById('editPrice').value = ad.price;
+                    if (ad.imageUrl) {
+                        document.getElementById('imagePreview').src = ad.imageUrl;
+                        document.getElementById('imagePreview').style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        // Функция сохранения отредактированного объявления
+        function saveEditedAd() {
+            const title = document.getElementById('editTitle').value;
+            const description = document.getElementById('editDescription').value;
+            const price = document.getElementById('editPrice').value;
+            const imageFile = document.getElementById('editImage').files[0];
+
+            if (title && description && price) {
+                let updatedAdData = {
+                    title,
+                    description,
+                    price
+                };
+
+                if (imageFile) {
+                    const storageReference = storageRef(storage, 'ads-images/' + adId + '.jpg');
+                    uploadBytes(storageReference, imageFile).then((snapshot) => {
+                        getDownloadURL(snapshot.ref).then((downloadURL) => {
+                            updatedAdData.imageUrl = downloadURL;
+                            updateAdInDatabase(updatedAdData);
+                        });
+                    });
+                } else {
+                    updateAdInDatabase(updatedAdData);
+                }
+            } else {
+                alert('Заполните все поля.');
+            }
+        }
+
+        // Функция обновления данных объявления в базе данных
+        function updateAdInDatabase(updatedAdData) {
+            const adRef = ref(database, 'ads/' + currentUser.uid + '/' + adId);
+            update(adRef, updatedAdData).then(() => {
+                alert('Объявление обновлено!');
+                window.location.href = 'ads.html'; // Перенаправление на страницу с объявлениями
+            }).catch((error) => {
+                alert('Ошибка обновления: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
