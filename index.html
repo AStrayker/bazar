@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PreCoinMarket</title>
-    <!-- Иконка для страницы -->
+    <title id="siteTitle">Bazar - Доска объявлений</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,21 +19,15 @@
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
         }
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-        
         /* Стили бокового меню */
         .sidebar {
-            width: 200px;
-            background-color: #ffffff; /* Светлый фон для меню */
+            width: 250px;
+            background-color: #ffffff;
             border-right: 1px solid #ddd;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Высота на весь экран */
+            height: 100vh;
             overflow-y: auto;
-            z-index: 1000; /* Поверх затемняющего фона */
         }
         .logo {
             font-size: 24px;
@@ -59,25 +53,19 @@
         .menu li a:hover {
             background-color: #e0e0e0;
         }
-        
+
         /* Основной контент */
         .content {
-            flex: 1;
+            margin-left: 250px;
             padding: 20px;
-            position: relative;
-            z-index: 1; /* Под затемняющим фоном */
         }
-        .header {
+        .content .header {
             font-size: 24px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 20px;
         }
-        .header a {
-            font-size: 16px;
-            color: #333;
-            text-decoration: underline;
+        .content .subheader {
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
         /* Формы для регистрации и входа */
@@ -115,8 +103,8 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: -200px;
-                width: 200px;
+                left: -250px;
+                width: 250px;
                 transition: all 0.3s;
             }
             .sidebar.active {
@@ -128,18 +116,17 @@
                 top: 10px;
                 cursor: pointer;
                 font-size: 30px;
-                z-index: 1100; /* Поверх затемняющего слоя */
+                z-index: 1100;
             }
-            /* Затемняющий фон */
             .overlay {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+                background: rgba(0, 0, 0, 0.5);
                 display: none;
-                z-index: 999; /* Под меню */
+                z-index: 999;
             }
             .overlay.active {
                 display: block;
@@ -150,34 +137,25 @@
 <body>
     <div class="overlay"></div>
 
-    <div class="container">
-        <!-- Боковое меню -->
-        <nav class="sidebar">
-            <div class="logo">PreCoinMarket</div>
-            <ul class="menu" id="menu-list">
-                <li><a href="#" id="adsBtn">Объявления</a></li>
-                <li><a href="#" id="companyBtn">Компании</a></li>
-            </ul>
-        </nav>
+    <div class="sidebar">
+        <div class="logo" id="logoTitle">Bazar</div>
+        <ul class="menu" id="menu-list">
+            <li><a href="index.html" id="adsBtn">Объявления</a></li>
+            <li><a href="companies.html" id="companiesBtn">Компании</a></li>
+            <li><a href="profile.html" id="profileBtn">Профиль</a></li>
+        </ul>
+    </div>
 
-        <!-- Основной контент -->
-        <div class="content">
-            <div class="header">
-                <span id="pageTitle">Добро пожаловать!</span>
-                <a href="#">/ Категории</a>
-            </div>
-            <div id="authContainer">
-                <!-- Здесь будет отображаться форма входа или регистрации -->
-            </div>
-        </div>
+    <div class="content">
+        <div class="header" id="pageHeader">Добро пожаловать!</div>
+        <div id="authContainer"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-        // Конфиг Firebase
+        
         const firebaseConfig = {
             apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
             authDomain: "bazar-c6315.firebaseapp.com",
@@ -185,47 +163,38 @@
             projectId: "bazar-c6315",
             storageBucket: "bazar-c6315.firebasestorage.app",
             messagingSenderId: "516633997350",
-            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7",
+            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7"
         };
 
-        // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
         const database = getDatabase(app);
 
-        // Функция для отображения формы регистрации
-        function showRegisterForm() {
-            document.getElementById('pageTitle').innerText = "Регистрация";
-            document.getElementById('authContainer').innerHTML = `
-                <div class="auth-form">
-                    <h3>Регистрация</h3>
-                    <input type="email" id="regEmail" placeholder="Email" />
-                    <input type="password" id="regPassword" placeholder="Пароль" />
-                    <button id="registerBtn">Зарегистрироваться</button>
-                </div>
-            `;
-
-            document.getElementById('registerBtn').addEventListener('click', () => {
-                const email = document.getElementById('regEmail').value;
-                const password = document.getElementById('regPassword').value;
-
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                        saveUserData(user.uid, email);
-                        alert('Вы зарегистрированы!');
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        console.error(errorCode, errorMessage);
+        // Функция для загрузки данных сайта (название, меню)
+        function loadSiteData() {
+            const siteRef = ref(database, 'siteData');
+            get(siteRef).then(snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('siteTitle').innerText = data.siteTitle || 'Bazar - Доска объявлений';
+                    document.getElementById('logoTitle').innerText = data.siteTitle || 'Bazar';
+                    const menuItems = data.menu || [];
+                    const menuList = document.getElementById('menu-list');
+                    menuList.innerHTML = '';
+                    menuItems.forEach(item => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = item.link;
+                        a.innerText = item.name;
+                        li.appendChild(a);
+                        menuList.appendChild(li);
                     });
+                }
             });
         }
 
-        // Функция для отображения формы входа
+        // Функции для регистрации и входа
         function showLoginForm() {
-            document.getElementById('pageTitle').innerText = "Вход";
             document.getElementById('authContainer').innerHTML = `
                 <div class="auth-form">
                     <h3>Вход</h3>
@@ -234,28 +203,17 @@
                     <button id="loginBtn">Войти</button>
                 </div>
             `;
-
             document.getElementById('loginBtn').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
-
                 signInWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
                         const user = userCredential.user;
                         alert('Добро пожаловать!');
                     })
                     .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        console.error(errorCode, errorMessage);
+                        alert('Ошибка входа: ' + error.message);
                     });
-            });
-        }
-
-        // Функция для сохранения данных пользователя в Firebase
-        function saveUserData(userId, email) {
-            set(ref(database, 'users/' + userId), {
-                email: email
             });
         }
 
@@ -279,9 +237,9 @@
             }
         });
 
-        // Загружаем меню при старте
+        // Загружаем данные сайта при старте
         document.addEventListener("DOMContentLoaded", () => {
-            showLoginForm();  // или showRegisterForm() для регистрации
+            loadSiteData();
         });
     </script>
 </body>
