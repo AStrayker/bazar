@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сортировка объявлений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .sort-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sort-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .ad-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .ad-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sort-container">
+        <div class="sort-controls">
+            <select id="sortBy">
+                <option value="date">По дате</option>
+                <option value="price">По цене</option>
+                <option value="popularity">По популярности</option>
+            </select>
+            <button onclick="loadAds()">Применить сортировку</button>
+        </div>
+        <ul id="ads-list" class="ad-list"></ul>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
+            authDomain: "bazar-c6315.firebaseapp.com",
+            databaseURL: "https://bazar-c6315-default-rtdb.firebaseio.com",
+            projectId: "bazar-c6315",
+            storageBucket: "bazar-c6315.firebasestorage.app",
+            messagingSenderId: "516633997350",
+            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Загрузка объявлений с сортировкой
+        function loadAds() {
+            const sortBy = document.getElementById('sortBy').value;
+            const adsRef = ref(database, 'ads');
+            get(adsRef).then((snapshot) => {
+                const ads = snapshot.val();
+                const sortedAds = sortAds(Object.values(ads), sortBy);
+                displayAds(sortedAds);
+            });
+        }
+
+        // Функция сортировки
+        function sortAds(ads, sortBy) {
+            if (sortBy === 'date') {
+                return ads.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else if (sortBy === 'price') {
+                return ads.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'popularity') {
+                return ads.sort((a, b) => b.views - a.views);
+            }
+            return ads;
+        }
+
+        // Отображение списка объявлений
+        function displayAds(ads) {
+            const adList = document.getElementById('ads-list');
+            adList.innerHTML = '';
+            ads.forEach(ad => {
+                const adItem = document.createElement('li');
+                adItem.classList.add('ad-item');
+                adItem.innerHTML = `
+                    <h3>${ad.title}</h3>
+                    <p>Цена: ${ad.price}₽</p>
+                    <p>Описание: ${ad.description}</p>
+                `;
+                adList.appendChild(adItem);
+            });
+        }
+
+        // Инициализация при загрузке страницы
+        loadAds();
+    </script>
+
+</body>
+</html>
