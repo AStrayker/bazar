@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить компанию</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-container input,
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Добавить компанию</h2>
+        <input type="text" id="companyName" placeholder="Название компании">
+        <textarea id="companyDescription" placeholder="Описание компании"></textarea>
+        <input type="file" id="companyLogo" accept="image/*">
+        <img id="logoPreview" class="image-preview" style="display: none;">
+        <button onclick="createCompany()">Создать компанию</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
+            authDomain: "bazar-c6315.firebaseapp.com",
+            databaseURL: "https://bazar-c6315-default-rtdb.firebaseio.com",
+            projectId: "bazar-c6315",
+            storageBucket: "bazar-c6315.firebasestorage.app",
+            messagingSenderId: "516633997350",
+            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        let currentUser = null;
+
+        // Проверка на авторизацию
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+            } else {
+                alert("Пожалуйста, войдите в систему.");
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Функция создания компании
+        function createCompany() {
+            const companyName = document.getElementById('companyName').value;
+            const companyDescription = document.getElementById('companyDescription').value;
+            const companyLogoFile = document.getElementById('companyLogo').files[0];
+
+            if (companyName && companyDescription) {
+                let companyData = {
+                    name: companyName,
+                    description: companyDescription,
+                    userId: currentUser.uid
+                };
+
+                if (companyLogoFile) {
+                    const logoStorageRef = storageRef(storage, 'company-logos/' + currentUser.uid + '/' + companyName + '.jpg');
+                    uploadBytes(logoStorageRef, companyLogoFile).then((snapshot) => {
+                        getDownloadURL(snapshot.ref).then((downloadURL) => {
+                            companyData.logoUrl = downloadURL;
+                            saveCompanyData(companyData);
+                        });
+                    });
+                } else {
+                    saveCompanyData(companyData);
+                }
+            } else {
+                alert('Заполните все поля.');
+            }
+        }
+
+        // Функция сохранения данных компании в Firebase
+        function saveCompanyData(companyData) {
+            const companyRef = ref(database, 'companies/' + currentUser.uid);
+            const newCompanyRef = push(companyRef);
+            set(newCompanyRef, companyData).then(() => {
+                alert('Компания создана!');
+                window.location.href = 'companies.html'; // Перенаправление на страницу с компаниями
+            }).catch((error) => {
+                alert('Ошибка создания компании: ' + error.message);
+            });
+        }
+    </script>
+
+</body>
+</html>
