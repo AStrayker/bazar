@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой профиль</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <title>Профиль</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,60 +11,63 @@
             padding: 20px;
         }
         .profile-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .profile-container img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 20px;
+        .profile-container h2 {
+            text-align: center;
         }
-        .profile-container input,
-        .profile-container textarea {
+        input {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-bottom: 10px;
             font-size: 16px;
-            border-radius: 4px;
             border: 1px solid #ccc;
+            border-radius: 4px;
         }
-        .profile-container button {
-            padding: 10px 20px;
+        button {
+            padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-            width: 100%;
         }
-        .profile-container button:hover {
+        button:hover {
             background-color: #45a049;
+        }
+        .profile-info {
+            margin-top: 20px;
+        }
+        .profile-info img {
+            max-width: 100px;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
 
     <div class="profile-container">
-        <h2>Мой профиль</h2>
-        <img id="profile-pic" src="" alt="Фото профиля">
-        <input type="file" id="newProfilePic" accept="image/*">
-        <input type="text" id="displayName" placeholder="Имя пользователя">
-        <textarea id="userBio" placeholder="О себе"></textarea>
-        <button onclick="updateProfile()">Сохранить изменения</button>
+        <h2>Ваш профиль</h2>
+        <input type="text" id="username" placeholder="Ваше имя" />
+        <input type="file" id="profile-pic" />
+        <button id="save-profile">Сохранить</button>
+
+        <div class="profile-info">
+            <img id="profile-img" src="" alt="Profile Image" />
+            <p id="profile-name"></p>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, child, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
@@ -81,69 +80,66 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
+        const auth = getAuth(app);
         const database = getDatabase(app);
         const storage = getStorage(app);
 
-        let currentUser = null;
+        const usernameInput = document.getElementById('username');
+        const profilePicInput = document.getElementById('profile-pic');
+        const saveButton = document.getElementById('save-profile');
+        const profileImage = document.getElementById('profile-img');
+        const profileName = document.getElementById('profile-name');
 
-        // Проверка на авторизацию
-        onAuthStateChanged(auth, (user) => {
+        // Слушатель на изменение состояния пользователя
+        onAuthStateChanged(auth, user => {
             if (user) {
-                currentUser = user;
-                loadUserProfile();
-            } else {
-                alert("Пожалуйста, войдите в систему.");
-                window.location.href = 'login.html';
-            }
-        });
+                const userRef = ref(database, 'users/' + user.uid);
+                get(userRef).then(snapshot => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        profileName.textContent = userData.username || 'Без имени';
+                        if (userData.profilePic) {
+                            profileImage.src = userData.profilePic;
+                        }
+                    } else {
+                        console.log('Нет данных пользователя');
+                    }
+                });
 
-        // Загрузка информации о пользователе
-        function loadUserProfile() {
-            const userRef = ref(database, 'users/' + currentUser.uid);
-            userRef.get().then((snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    document.getElementById('profile-pic').src = data.profilePic || 'default-profile-pic.jpg';
-                    document.getElementById('displayName').value = data.displayName || '';
-                    document.getElementById('userBio').value = data.bio || '';
-                }
-            });
-        }
+                saveButton.addEventListener('click', () => {
+                    const username = usernameInput.value;
+                    const profilePicFile = profilePicInput.files[0];
 
-        // Обновление профиля
-        function updateProfile() {
-            const displayName = document.getElementById('displayName').value;
-            const bio = document.getElementById('userBio').value;
-            const newProfilePic = document.getElementById('newProfilePic').files[0];
+                    if (profilePicFile) {
+                        const storageRef = storageRef(storage, 'profile_pics/' + user.uid);
+                        const uploadTask = uploadBytesResumable(storageRef, profilePicFile);
 
-            const userData = {
-                displayName: displayName,
-                bio: bio
-            };
-
-            if (newProfilePic) {
-                const profilePicRef = storageRef(storage, 'profile-pics/' + currentUser.uid + '.jpg');
-                uploadBytes(profilePicRef, newProfilePic).then((snapshot) => {
-                    getDownloadURL(snapshot.ref).then((downloadURL) => {
-                        userData.profilePic = downloadURL;
-                        saveUserProfile(userData);
-                    });
+                        uploadTask.on('state_changed', snapshot => {
+                            // Можно добавить индикатор загрузки
+                        }, (error) => {
+                            console.error('Ошибка загрузки', error);
+                        }, () => {
+                            getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+                                set(ref(database, 'users/' + user.uid), {
+                                    username: username,
+                                    profilePic: downloadURL
+                                }).then(() => {
+                                    console.log('Профиль обновлен');
+                                });
+                            });
+                        });
+                    } else {
+                        set(ref(database, 'users/' + user.uid), {
+                            username: username,
+                        }).then(() => {
+                            console.log('Профиль обновлен');
+                        });
+                    }
                 });
             } else {
-                saveUserProfile(userData);
+                window.location.href = '/login.html';
             }
-        }
-
-        // Сохранение данных профиля в Firebase
-        function saveUserProfile(userData) {
-            const userRef = ref(database, 'users/' + currentUser.uid);
-            set(userRef, userData).then(() => {
-                alert('Профиль обновлён!');
-            }).catch((error) => {
-                alert('Ошибка обновления профиля: ' + error.message);
-            });
-        }
+        });
     </script>
 
 </body>
