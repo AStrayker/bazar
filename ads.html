@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявления</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <style>
+        /* Пример стилей для страницы с объявлениями */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .header {
+            font-size: 24px;
+            text-align: center;
+            margin: 20px;
+        }
+        .ads-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .ad-card {
+            background-color: white;
+            padding: 20px;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .ad-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .ad-card p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .ad-card button {
+            padding: 8px 12px;
+            background-color: #F37021;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .ad-card button:hover {
+            background-color: #D65B0F;
+        }
+        .add-ad-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Ваши объявления</div>
+    <button class="add-ad-btn" onclick="showAddAdForm()">Добавить новое объявление</button>
+
+    <div class="ads-container" id="adsContainer">
+        <!-- Здесь будут отображаться объявления -->
+    </div>
+
+    <!-- Форма для добавления объявления -->
+    <div id="addAdForm" style="display: none; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h3>Добавить объявление</h3>
+        <input type="text" id="adTitle" placeholder="Заголовок объявления" style="width: 100%; padding: 10px; margin-bottom: 10px; font-size: 16px;">
+        <textarea id="adDescription" placeholder="Описание объявления" style="width: 100%; padding: 10px; margin-bottom: 10px; font-size: 16px;"></textarea>
+        <input type="number" id="adPrice" placeholder="Цена" style="width: 100%; padding: 10px; margin-bottom: 10px; font-size: 16px;">
+        <button onclick="saveAd()" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border-radius: 4px; cursor: pointer;">Сохранить</button>
+        <button onclick="closeAddAdForm()" style="width: 100%; padding: 10px; background-color: #F37021; color: white; border-radius: 4px; cursor: pointer; margin-top: 10px;">Отменить</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, get, child, update, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
+            authDomain: "bazar-c6315.firebaseapp.com",
+            databaseURL: "https://bazar-c6315-default-rtdb.firebaseio.com",
+            projectId: "bazar-c6315",
+            storageBucket: "bazar-c6315.firebasestorage.app",
+            messagingSenderId: "516633997350",
+            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase(app);
+
+        // Проверка на авторизацию
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loadAds();
+            } else {
+                alert("Пожалуйста, войдите в систему.");
+                window.location.href = 'login.html'; // Перенаправление на страницу входа
+            }
+        });
+
+        // Функция для загрузки объявлений из базы данных
+        function loadAds() {
+            const adsRef = ref(database, 'ads');
+            get(adsRef).then(snapshot => {
+                if (snapshot.exists()) {
+                    const ads = snapshot.val();
+                    const adsContainer = document.getElementById('adsContainer');
+                    adsContainer.innerHTML = '';
+                    for (let adId in ads) {
+                        const ad = ads[adId];
+                        const adCard = document.createElement('div');
+                        adCard.classList.add('ad-card');
+                        adCard.innerHTML = `
+                            <h3>${ad.title}</h3>
+                            <p>${ad.description}</p>
+                            <p>Цена: ${ad.price}</p>
+                            <button onclick="deleteAd('${adId}')">Удалить</button>
+                        `;
+                        adsContainer.appendChild(adCard);
+                    }
+                }
+            });
+        }
+
+        // Функция для добавления нового объявления
+        function showAddAdForm() {
+            document.getElementById('addAdForm').style.display = 'block';
+        }
+
+        function closeAddAdForm() {
+            document.getElementById('addAdForm').style.display = 'none';
+        }
+
+        function saveAd() {
+            const title = document.getElementById('adTitle').value;
+            const description = document.getElementById('adDescription').value;
+            const price = document.getElementById('adPrice').value;
+
+            if (title && description && price) {
+                const adRef = ref(database, 'ads/' + currentUser.uid);
+                const newAdId = Date.now(); // Используем timestamp для уникальности ID
+                set(ref(database, 'ads/' + currentUser.uid + '/' + newAdId), {
+                    title,
+                    description,
+                    price
+                }).then(() => {
+                    alert('Объявление добавлено!');
+                    loadAds();
+                    closeAddAdForm();
+                }).catch((error) => {
+                    alert('Ошибка добавления объявления: ' + error.message);
+                });
+            }
+        }
+
+        // Функция для удаления объявления
+        function deleteAd(adId) {
+            if (confirm('Вы уверены, что хотите удалить это объявление?')) {
+                const adRef = ref(database, 'ads/' + currentUser.uid + '/' + adId);
+                remove(adRef).then(() => {
+                    alert('Объявление удалено!');
+                    loadAds();
+                }).catch((error) => {
+                    alert('Ошибка удаления объявления: ' + error.message);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
