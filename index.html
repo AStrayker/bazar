@@ -3,244 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="siteTitle">Bazar - Доска объявлений</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <title>Редактирование контента</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCd-Kf5smC-xTCksRRFSOBQmpKsegX6lPQ",
+            authDomain: "precoinmarket-8af8e.firebaseapp.com",
+            databaseURL: "https://precoinmarket-8af8e-default-rtdb.firebaseio.com",
+            projectId: "precoinmarket-8af8e",
+            storageBucket: "precoinmarket-8af8e.appspot.com",
+            messagingSenderId: "11819212336",
+            appId: "1:11819212336:web:0ea96456065f66ecca17f5",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        async function loadContent(identifier = 'content') {
+            const contentRef = ref(database, identifier);
+            const snapshot = await get(contentRef);
+            const data = snapshot.val();
+            document.getElementById('contentEditable').innerHTML = data ? data.text : '';
+        }
+
+        async function saveContent(identifier = 'content') {
+            const newContent = document.getElementById('contentEditable').innerHTML;
+            const contentRef = ref(database, identifier);
+            await set(contentRef, { text: newContent });
+            alert('Контент сохранен!');
+            toggleEdit(false);
+        }
+
+        function authorizeEdit() {
+            const password = prompt("Введите пароль для редактирования:");
+            if (password === "09101998") {
+                toggleEdit(true);
+            } else {
+                alert("Неверный пароль");
+            }
+        }
+
+        function toggleEdit(isEditing) {
+            document.getElementById('contentEditable').contentEditable = isEditing;
+            document.getElementById('toolbar').style.display = isEditing ? 'flex' : 'none';
+            document.getElementById('editButton').style.display = isEditing ? 'none' : 'inline-block';
+            document.getElementById('saveButton').style.display = isEditing ? 'inline-block' : 'none';
+            document.getElementById('cancelButton').style.display = isEditing ? 'inline-block' : 'none';
+        }
+
+        function applyFormatting(command, value = null) {
+            document.execCommand(command, false, value);
+        }
+
+        function openImageModal() {
+            document.getElementById('imageModal').style.display = 'block';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function insertImageWithSize() {
+            const url = document.getElementById('imageUrl').value;
+            const width = document.getElementById('imageWidth').value || "auto";
+            const height = document.getElementById('imageHeight').value || "auto";
+            if (url) {
+                const imgHTML = `<img src="${url}" style="width:${width}; height:${height};">`;
+                document.execCommand('insertHTML', false, imgHTML);
+            }
+            closeImageModal();
+        }
+
+        window.onload = () => loadContent();
+        window.saveContent = () => saveContent();
+        window.authorizeEdit = authorizeEdit;
+        window.applyFormatting = applyFormatting;
+        window.openImageModal = openImageModal;
+        window.closeImageModal = closeImageModal;
+        window.insertImageWithSize = insertImageWithSize;
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #contentEditable {
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 300px;
+            outline: none;
         }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+        #toolbar {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 10px;
         }
-        /* Стили бокового меню */
-        .sidebar {
-            width: 250px;
-            background-color: #ffffff;
-            border-right: 1px solid #ddd;
+        #toolbar .buttons {
             display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow-y: auto;
         }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            padding: 20px;
-            text-align: center;
-            background-color: #F37021;
-            color: white;
-        }
-        .menu {
-            list-style: none;
-            padding: 20px 0;
-        }
-        .menu li {
-            padding: 10px 20px;
-        }
-        .menu li a {
-            text-decoration: none;
-            color: black;
-            font-size: 16px;
-            display: block;
-        }
-        .menu li a:hover {
-            background-color: #e0e0e0;
-        }
-
-        /* Основной контент */
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-        .content .header {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .content .subheader {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        /* Формы для регистрации и входа */
-        .auth-form {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .auth-form input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .auth-form button {
-            width: 100%;
-            padding: 10px;
-            background-color: #F37021;
+        #toolbar button {
+            background: transparent;
             border: none;
-            color: white;
+            cursor: pointer;
+            margin: 0 5px;
+            padding: 5px;
+            font-size: 18px;
+        }
+        #toolbar button:hover {
+            background: #ddd;
+        }
+        .control-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .control-buttons button {
+            padding: 8px 16px;
             font-size: 16px;
             cursor: pointer;
+            border: none;
             border-radius: 4px;
         }
-        .auth-form button:hover {
-            background-color: #D65B0F;
+        #editButton { background-color: #007bff; color: white; }
+        #saveButton { background-color: #28a745; color: white; display: none; }
+        #cancelButton { background-color: #dc3545; color: white; display: none; }
+        
+        /* Модальное окно */
+        #imageModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 300px;
+            z-index: 1000;
         }
-
-        /* Мобильные стили */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -250px;
-                width: 250px;
-                transition: all 0.3s;
-            }
-            .sidebar.active {
-                left: 0;
-            }
-            .menu-toggle {
-                position: absolute;
-                left: 10px;
-                top: 10px;
-                cursor: pointer;
-                font-size: 30px;
-                z-index: 1100;
-            }
-            .overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: none;
-                z-index: 999;
-            }
-            .overlay.active {
-                display: block;
-            }
+        #imageModal label {
+            display: block;
+            margin-top: 10px;
+        }
+        #imageModal input {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        #imageModal .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="overlay"></div>
-
-    <div class="sidebar">
-        <div class="logo" id="logoTitle">Bazar</div>
-        <ul class="menu" id="menu-list">
-            <li><a href="index.html" id="adsBtn">Объявления</a></li>
-            <li><a href="companies.html" id="companiesBtn">Компании</a></li>
-            <li><a href="profile.html" id="profileBtn">Профиль</a></li>
-        </ul>
+    <h1>Редактирование контента</h1>
+    <div id="toolbar">
+        <div class="buttons">
+            <button onclick="applyFormatting('bold')"><b>Жирный</b></button>
+            <button onclick="applyFormatting('italic')"><i>Курсив</i></button>
+            <button onclick="applyFormatting('underline')"><u>Подчеркнутый</u></button>
+            <button onclick="applyFormatting('strikeThrough')"><s>Зачеркнутый</s></button>
+            <button onclick="openImageModal()">🖼️ Вставить изображение</button>
+            <button onclick="applyFormatting('createLink', prompt('Введите URL ссылки'))">🔗 Вставить ссылку</button>
+        </div>
     </div>
 
-    <div class="content">
-        <div class="header" id="pageHeader">Добро пожаловать!</div>
-        <div id="authContainer"></div>
+    <div id="contentEditable" contenteditable="false"></div>
+
+    <!-- Управляющие кнопки внизу -->
+    <div class="control-buttons">
+        <button id="editButton" onclick="authorizeEdit()">Редактировать</button>
+        <button id="saveButton" onclick="saveContent()">Сохранить</button>
+        <button id="cancelButton" onclick="toggleEdit(false)">Отмена</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyB44ehLQ1q9SBXvvvkSBDofAp5hk8-ikOM",
-            authDomain: "bazar-c6315.firebaseapp.com",
-            databaseURL: "https://bazar-c6315-default-rtdb.firebaseio.com",
-            projectId: "bazar-c6315",
-            storageBucket: "bazar-c6315.firebasestorage.app",
-            messagingSenderId: "516633997350",
-            appId: "1:516633997350:web:98a65c96b6f1e5566c36e7"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth();
-        const database = getDatabase(app);
-
-        // Функция для загрузки данных сайта (название, меню)
-        function loadSiteData() {
-            const siteRef = ref(database, 'siteData');
-            get(siteRef).then(snapshot => {
-                const data = snapshot.val();
-                if (data) {
-                    document.getElementById('siteTitle').innerText = data.siteTitle || 'Bazar - Доска объявлений';
-                    document.getElementById('logoTitle').innerText = data.siteTitle || 'Bazar';
-                    const menuItems = data.menu || [];
-                    const menuList = document.getElementById('menu-list');
-                    menuList.innerHTML = '';
-                    menuItems.forEach(item => {
-                        const li = document.createElement('li');
-                        const a = document.createElement('a');
-                        a.href = item.link;
-                        a.innerText = item.name;
-                        li.appendChild(a);
-                        menuList.appendChild(li);
-                    });
-                }
-            });
-        }
-
-        // Функции для регистрации и входа
-        function showLoginForm() {
-            document.getElementById('authContainer').innerHTML = `
-                <div class="auth-form">
-                    <h3>Вход</h3>
-                    <input type="email" id="loginEmail" placeholder="Email" />
-                    <input type="password" id="loginPassword" placeholder="Пароль" />
-                    <button id="loginBtn">Войти</button>
-                </div>
-            `;
-            document.getElementById('loginBtn').addEventListener('click', () => {
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                        alert('Добро пожаловать!');
-                    })
-                    .catch((error) => {
-                        alert('Ошибка входа: ' + error.message);
-                    });
-            });
-        }
-
-        // Слушатель состояния аутентификации
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('authContainer').innerHTML = `
-                    <div class="auth-form">
-                        <h3>Вы вошли как: ${user.email}</h3>
-                        <button id="logoutBtn">Выйти</button>
-                    </div>
-                `;
-                document.getElementById('logoutBtn').addEventListener('click', () => {
-                    auth.signOut().then(() => {
-                        alert('Вы вышли!');
-                        location.reload();
-                    });
-                });
-            } else {
-                showLoginForm();
-            }
-        });
-
-        // Загружаем данные сайта при старте
-        document.addEventListener("DOMContentLoaded", () => {
-            loadSiteData();
-        });
-    </script>
+    <!-- Модальное окно для вставки изображения -->
+    <div id="imageModal">
+        <h3>Вставка изображения</h3>
+        <label for="imageUrl">URL изображения:</label>
+        <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg">
+        <label for="imageWidth">Ширина (px):</label>
+        <input type="text" id="imageWidth" placeholder="Например: 100">
+        <label for="imageHeight">Высота (px):</label>
+        <input type="text" id="imageHeight" placeholder="Например: 100">
+        <div class="modal-buttons">
+            <button onclick="insertImageWithSize()">Применить</button>
+            <button onclick="closeImageModal()">Закрыть</button>
+        </div>
+    </div>
 </body>
 </html>
