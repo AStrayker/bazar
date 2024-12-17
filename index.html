@@ -3,10 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактирование контента</title>
+    <title>PreCoinMarket</title>
+    <!-- Иконка для страницы -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* Основные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Стили бокового меню */
+        .sidebar {
+            width: 200px;
+            background-color: #ffffff; /* Светлый фон для меню */
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Высота на весь экран */
+            overflow-y: auto;
+            z-index: 1000; /* Поверх затемняющего фона */
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            text-align: center;
+            background-color: #4f88ea;
+            color: white;
+        }
+        .menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+        .menu li {
+            padding: 10px 20px;
+        }
+        .menu li a {
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+            display: block;
+        }
+        .menu li a:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Основной контент */
+        .content {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+            z-index: 1; /* Под затемняющим фоном */
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header a {
+            font-size: 16px;
+            color: #333;
+            text-decoration: underline;
+        }
+        
+        /* Поиск */
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* Перенос поиска вправо */
+            position: relative;
+        }
+        .search-bar {
+            padding: 8px;
+            font-size: 14px;
+            width: 200px;
+        }
+        .suggestions {
+            border: 1px solid #ddd;
+            max-height: 100px;
+            overflow-y: auto;
+            background: white;
+            position: absolute;
+            width: 200px;
+            top: 38px;
+            display: none;
+        }
+        .suggestions div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .suggestions div:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Мобильные стили */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -200px;
+                width: 200px;
+                transition: all 0.3s;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .menu-toggle {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+                cursor: pointer;
+                font-size: 30px;
+                z-index: 1100; /* Поверх затемняющего слоя */
+            }
+            /* Затемняющий фон */
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+                display: none;
+                z-index: 999; /* Под меню */
+            }
+            .overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="logo">PreCoinMarket</div>
+            <ul class="menu" id="menu-list">
+                <!-- Элементы списка будут загружены из внешнего файла -->
+            </ul>
+        </nav>
+
+        <!-- Основной контент -->
+        <div class="content">
+            <div class="header">
+                My Account
+                <a href="#">/ Категории</a>
+                <div class="search-container">
+                    <input type="text" id="search" class="search-bar" placeholder="Поиск на странице">
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+            </div>
+            <div class="content-area" id="content-area">
+                <p>Контент загружается...</p>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCd-Kf5smC-xTCksRRFSOBQmpKsegX6lPQ",
@@ -21,183 +189,80 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        async function loadContent(identifier = 'content') {
-            const contentRef = ref(database, identifier);
+        // Функция для загрузки текста без кнопок
+        async function loadTextContent() {
+            const contentRef = ref(database, 'content');
             const snapshot = await get(contentRef);
             const data = snapshot.val();
-            document.getElementById('contentEditable').innerHTML = data ? data.text : '';
-        }
-
-        async function saveContent(identifier = 'content') {
-            const newContent = document.getElementById('contentEditable').innerHTML;
-            const contentRef = ref(database, identifier);
-            await set(contentRef, { text: newContent });
-            alert('Контент сохранен!');
-            toggleEdit(false);
-        }
-
-        function authorizeEdit() {
-            const password = prompt("Введите пароль для редактирования:");
-            if (password === "09101998") {
-                toggleEdit(true);
+            if (data && data.text) {
+                document.getElementById('content-area').innerHTML = data.text;
             } else {
-                alert("Неверный пароль");
+                document.getElementById('content-area').innerHTML = "<p>Контент недоступен.</p>";
             }
         }
 
-        function toggleEdit(isEditing) {
-            document.getElementById('contentEditable').contentEditable = isEditing;
-            document.getElementById('toolbar').style.display = isEditing ? 'flex' : 'none';
-            document.getElementById('editButton').style.display = isEditing ? 'none' : 'inline-block';
-            document.getElementById('saveButton').style.display = isEditing ? 'inline-block' : 'none';
-            document.getElementById('cancelButton').style.display = isEditing ? 'inline-block' : 'none';
+        // Открытие/закрытие бокового меню на мобильных устройствах
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+        const toggleButton = document.createElement('div');
+        toggleButton.classList.add('menu-toggle');
+        toggleButton.innerHTML = '☰';
+        document.body.appendChild(toggleButton);
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Загрузка внешнего контента и меню при загрузке страницы
+        document.addEventListener("DOMContentLoaded", () => {
+            loadTextContent();
+            loadMenuItems();
+        });
+
+        // Загрузка элементов меню из файла
+        function loadMenuItems() {
+            fetch("http://premarket.pp.ua/menu-items.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("menu-list").innerHTML = data;
+                })
+                .catch(error => {
+                    document.getElementById("menu-list").innerHTML = `<li>Ошибка загрузки меню: ${error.message}</li>`;
+                });
         }
 
-        function applyFormatting(command, value = null) {
-            document.execCommand(command, false, value);
-        }
+        // Поисковая подсказка
+        const search = document.getElementById('search');
+        const suggestions = document.getElementById('suggestions');
+        const contentData = ["Bitcoin", "Ethereum", "Coin", "Wallet", "DeBank"];
 
-        function openImageModal() {
-            document.getElementById('imageModal').style.display = 'block';
-        }
-
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        function insertImageWithSize() {
-            const url = document.getElementById('imageUrl').value;
-            const width = document.getElementById('imageWidth').value || "auto";
-            const height = document.getElementById('imageHeight').value || "auto";
-            if (url) {
-                const imgHTML = `<img src="${url}" style="width:${width}; height:${height};">`;
-                document.execCommand('insertHTML', false, imgHTML);
+        search.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            const matches = contentData.filter(item => item.toLowerCase().includes(query));
+            suggestions.innerHTML = '';
+            if (matches.length > 0) {
+                matches.forEach(item => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.innerText = item;
+                    suggestionItem.addEventListener('click', () => {
+                        search.value = item;
+                        suggestions.style.display = 'none';
+                    });
+                    suggestions.appendChild(suggestionItem);
+                });
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
             }
-            closeImageModal();
-        }
-
-        window.onload = () => loadContent();
-        window.saveContent = () => saveContent();
-        window.authorizeEdit = authorizeEdit;
-        window.applyFormatting = applyFormatting;
-        window.openImageModal = openImageModal;
-        window.closeImageModal = closeImageModal;
-        window.insertImageWithSize = insertImageWithSize;
+        });
+        search.addEventListener('blur', () => {
+            setTimeout(() => suggestions.style.display = 'none', 100);
+        });
     </script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #contentEditable {
-            padding: 10px;
-            border: 1px solid #ccc;
-            min-height: 300px;
-            outline: none;
-        }
-        #toolbar {
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 5px;
-            margin-bottom: 10px;
-        }
-        #toolbar .buttons {
-            display: flex;
-        }
-        #toolbar button {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            margin: 0 5px;
-            padding: 5px;
-            font-size: 18px;
-        }
-        #toolbar button:hover {
-            background: #ddd;
-        }
-        .control-buttons {
-            margin-top: 10px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .control-buttons button {
-            padding: 8px 16px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-        }
-        #editButton { background-color: #007bff; color: white; }
-        #saveButton { background-color: #28a745; color: white; display: none; }
-        #cancelButton { background-color: #dc3545; color: white; display: none; }
-        
-        /* Модальное окно */
-        #imageModal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 300px;
-            z-index: 1000;
-        }
-        #imageModal label {
-            display: block;
-            margin-top: 10px;
-        }
-        #imageModal input {
-            width: 100%;
-            padding: 5px;
-            margin-top: 5px;
-        }
-        #imageModal .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Редактирование контента</h1>
-    <div id="toolbar">
-        <div class="buttons">
-            <button onclick="applyFormatting('bold')"><b>Жирный</b></button>
-            <button onclick="applyFormatting('italic')"><i>Курсив</i></button>
-            <button onclick="applyFormatting('underline')"><u>Подчеркнутый</u></button>
-            <button onclick="applyFormatting('strikeThrough')"><s>Зачеркнутый</s></button>
-            <button onclick="openImageModal()">🖼️ Вставить изображение</button>
-            <button onclick="applyFormatting('createLink', prompt('Введите URL ссылки'))">🔗 Вставить ссылку</button>
-        </div>
-    </div>
-
-    <div id="contentEditable" contenteditable="false"></div>
-
-    <!-- Управляющие кнопки внизу -->
-    <div class="control-buttons">
-        <button id="editButton" onclick="authorizeEdit()">Редактировать</button>
-        <button id="saveButton" onclick="saveContent()">Сохранить</button>
-        <button id="cancelButton" onclick="toggleEdit(false)">Отмена</button>
-    </div>
-
-    <!-- Модальное окно для вставки изображения -->
-    <div id="imageModal">
-        <h3>Вставка изображения</h3>
-        <label for="imageUrl">URL изображения:</label>
-        <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg">
-        <label for="imageWidth">Ширина (px):</label>
-        <input type="text" id="imageWidth" placeholder="Например: 100">
-        <label for="imageHeight">Высота (px):</label>
-        <input type="text" id="imageHeight" placeholder="Например: 100">
-        <div class="modal-buttons">
-            <button onclick="insertImageWithSize()">Применить</button>
-            <button onclick="closeImageModal()">Закрыть</button>
-        </div>
-    </div>
 </body>
 </html>
